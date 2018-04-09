@@ -268,11 +268,69 @@ async function postDelAllClass(ctx) {
   }
 }
 
+//发布任务
+async function postSubWork(ctx) {
+  const {title, mess, startTime, timeLong, distance} = ctx.request.body;
+  console.log(title, mess, startTime, timeLong, distance)
+  if (title && mess && startTime && timeLong && distance) {
+
+    //先注销掉上一个任务
+    let resultUpdate = await mysql("cWork").where("isActive", "1").update({
+      "isActive": 0
+    });
+
+    let result = await mysql("cWork").insert({
+      startTime,
+      timeLong: Number(timeLong) * 3600 * 1000,
+      distance: Number(distance) * 1000,
+      title,
+      mess
+    });
+    if (result) {
+      ctx.state.code = 1;
+      ctx.state.data = {
+        message: "ok"
+      }
+    } else {
+      ctx.state.code = 0;
+      ctx.state.data = {
+        message: "发生错误"
+      }
+    }
+  } else {
+    ctx.state.code = -1;
+    ctx.state.data = {
+      message: "拒绝访问"
+    }
+  }
+}
+
+//获取当前任务详情
+async function getCurrentWork(ctx) {
+  let result = await mysql("cWork").select("*").where("isActive", 1);
+  if (result.length === 0) {
+    ctx.state.code = 422;
+    ctx.state.data = {
+      message: "当前没有打卡任务"
+    }
+  } else {
+    ctx.state.code = 1;
+    ctx.state.data = {
+      data: result[0]
+    }
+  }
+}
+
+//获取当前进行的任务详情
+
+
 module.exports = {
   getCardList,
   getNotCardList,
   getAdminClassList,
   postAddClass,
   postUpdateClass,
-  postDelAllClass
+  postDelAllClass,
+  postSubWork,
+  getCurrentWork
 };

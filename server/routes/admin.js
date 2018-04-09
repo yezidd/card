@@ -20,4 +20,8 @@ router.post("/class/update", controllers.admin.postUpdateClass);
 
 router.post("/class/allDel", controllers.admin.postDelAllClass);
 
+router.post("/work/update", controllers.admin.postSubWork);
+
+router.get("/work/current", controllers.admin.getCurrentWork);
+
 module.exports = router;

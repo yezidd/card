@@ -33,6 +33,17 @@
     align-items: center;
 }
 
+.btn-class-group-work {
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 55px;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #dddddd;
+    justify-content: space-between;
+}
+
 .work-container {
     padding-left: 15px;
     padding-top: 15px;
