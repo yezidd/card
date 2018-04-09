@@ -2,12 +2,14 @@
  * Created by yzdd on 2018/4/3.
  */
 import React, {Component} from 'react';
-import {Table, Layout, DatePicker, Loading, Pagination, Button} from 'element-react'
+import {Table, Layout, DatePicker, Loading, Pagination, Button, Message, MessageBox} from 'element-react'
 import './home.css';
 import moment from "moment";
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
 import {ClassListStore} from "../logic/ClassListStore";
+import AddClassModal from "../component/AddClassModal";
+import {DelAllClass, updateClass} from "../logic/ClassApiStore";
 
 
 //打卡数据界面
@@ -67,7 +69,7 @@ export default class ClassManage extends Component {
         {
           label: "激活状态",
           prop: "isActive",
-          width:"160",
+          width: "160",
           render: function (data) {
             return (
               <div>
@@ -88,13 +90,13 @@ export default class ClassManage extends Component {
             if (data.isActive) {
               return (
                 <span>
-                  <Button type="danger" size="small">禁用</Button>
+                  <Button type="danger" size="small" onClick={() => this.updateBtn(data)}>禁用</Button>
                 </span>
               )
             } else {
               return (
                 <span>
-                  <Button type="info" size="small">激活</Button>
+                  <Button type="info" size="small" onClick={() => this.updateBtn(data)}>激活</Button>
                 </span>
               )
             }
@@ -103,6 +105,21 @@ export default class ClassManage extends Component {
       ]
     }
   }
+
+  updateBtn = async (data) => {
+    this.loading = true;
+    let result = await updateClass(data.id, !data.isActive);
+    if (result.code === 1) {
+      Message({
+        message: data.isActive ? "禁用成功" : "激活成功",
+        type: "success"
+      });
+      data.isActive = !data.isActive;
+    } else {
+      Message.error("发生错误");
+    }
+    this.loading = false;
+  };
 
   changeCurrent = async (currentPage) => {
     console.log(currentPage, "----当前页数");
@@ -114,7 +131,32 @@ export default class ClassManage extends Component {
 
   changeTag = () => {
     this.changeVisible = !this.changeVisible;
-  }
+  };
+
+  showAddModal = () => {
+    this.addClassModal.show();
+  };
+
+  //一键全部禁止
+  delAll = () => {
+    MessageBox.confirm('此操作将禁用全部班级, 是否继续?', '提示', {
+      type: 'warning'
+    }).then(async () => {
+      this.loading = true;
+      await DelAllClass();
+      Message({
+        type: 'success',
+        message: '禁用成功!'
+      });
+      this.classListStore.list.map((v, i) => {
+        v.isActive = 0;
+      });
+      this.loading = false;
+
+    }).catch(() => {
+
+    });
+  };
 
   render() {
     const {selectDate} = this.state;
@@ -130,8 +172,8 @@ export default class ClassManage extends Component {
                   :
                   <Button type="primary" icon="more" onClick={this.changeTag}>显示所有的班级</Button>
               }
-              <Button type="primary" icon="search">搜索</Button>
-              <Button type="primary" icon="plus">添加</Button>
+              <Button type="primary" icon="plus" onClick={this.showAddModal}>添加</Button>
+              <Button type="danger" icon="circle-close" onClick={this.delAll}>全部禁用</Button>
             </div>
           </Layout.Col>
         </Layout.Row>
@@ -153,6 +195,7 @@ export default class ClassManage extends Component {
             }}
           />
         </Loading>
+        <AddClassModal ref={ref => this.addClassModal = ref} classStore={this.classListStore}/>
       </div>
     );
   }

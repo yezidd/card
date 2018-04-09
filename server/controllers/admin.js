@@ -6,6 +6,7 @@ const moment = require("moment");
 
 const PER_PAGE = 10;
 
+//打卡学生信息
 async function getCardList(ctx) {
 
   let page = isNaN(Number(ctx.query.page)) ? 1 : Number(ctx.query.page);
@@ -170,8 +171,108 @@ async function getAdminClassList(ctx) {
   }
 }
 
+//添加班级
+async function postAddClass(ctx) {
+  if (ctx.request.body.name) {
+    let name = ctx.request.body.name;
+    console.log(name);
+    try {
+      let result = await mysql("cClass").insert({
+        className: name
+      });
+      if (result) {
+        ctx.state.code = 1;
+        ctx.state.data = {
+          data: {
+            id: result[0]
+          },
+          message: "ok"
+        }
+      }
+    } catch (err) {
+      ctx.state.code = 0;
+      ctx.state.data = {
+        message: "发生错误"
+      }
+    }
+  } else {
+    ctx.state.code = -1;
+    ctx.state.data = {
+      message: "服务器错误"
+    }
+  }
+}
+
+//禁用班级
+async function postUpdateClass(ctx) {
+  if (ctx.request.body.id) {
+    let id = ctx.request.body.id;
+    let isActive = ctx.request.body.isActive;
+    try {
+
+      let resultOne = await mysql("cClass").where("id", id);
+      if (resultOne.length === 0) {
+        ctx.state.code = 0;
+        ctx.state.data = {
+          message: "发生错误"
+        }
+      } else {
+        let result = await mysql('cClass')
+          .where('id', id)
+          .update({
+            isActive: resultOne[0].isActive === 1 ? 0 : 1,
+          });
+        if (result) {
+          ctx.state.code = 1;
+          ctx.state.data = {
+            message: "ok"
+          }
+        } else {
+          ctx.state.code = 0;
+          ctx.state.data = {
+            message: "发生错误"
+          }
+        }
+      }
+    } catch (err) {
+      ctx.state.code = 0;
+      ctx.state.data = {
+        message: "发生错误"
+      }
+    }
+  } else {
+    ctx.state.code = -1;
+    ctx.state.data = {
+      message: "服务器错误"
+    }
+  }
+}
+
+//禁用全部班级
+async function postDelAllClass(ctx) {
+  let result = await mysql('cClass')
+    .where('isActive', ">", "0")
+    .update({
+      isActive: 0
+    });
+  if (result) {
+    ctx.state.code = 1;
+    ctx.state.data = {
+      message: "ok"
+    }
+  } else {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      message: "发生错误"
+    }
+  }
+}
+
 module.exports = {
   getCardList,
   getNotCardList,
-  getAdminClassList
+  getAdminClassList,
+  postAddClass,
+  postUpdateClass,
+  postDelAllClass
 };

@@ -23,11 +23,21 @@
     justify-content: flex-end;
     align-items: center;
 }
-.btn-class-group{
+
+.btn-class-group {
     padding-left: 15px;
     width: 100%;
-    height:55px;
+    height: 55px;
     flex-direction: row;
     display: flex;
     align-items: center;
+}
+
+.work-container {
+    padding-left: 15px;
+    padding-top: 15px;
+    padding-right: 15px;
+    max-width: 50%;
+    width: 50%;
+    margin: 0px auto;
 }

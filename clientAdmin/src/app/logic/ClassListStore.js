@@ -21,6 +21,11 @@ export class ClassListStore {
     this.page = 1;
   }
 
+  add(obj) {
+    this.list.push(obj);
+    console.log(this.list);
+  }
+
   async getList() {
     try {
       const uri = new URI(`/class/list`).query({

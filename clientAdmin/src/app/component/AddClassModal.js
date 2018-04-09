@@ -2,7 +2,9 @@
  * Created by yzdd on 2018/4/5.
  */
 import React, {Component} from 'react';
-import {Button, Dialog, Form,Select,Input} from "element-react";
+import {Button, Dialog, Form, Select, Input, Loading, Message} from "element-react";
+import {addClass} from "../logic/ClassApiStore";
+import {ClassItem} from "../logic/ClassListStore";
 
 export default class AddClassModal extends Component {
   constructor(props) {
@@ -11,76 +13,81 @@ export default class AddClassModal extends Component {
     this.state = {
       dialogVisible2: false,
       dialogVisible3: false,
+      fullscreen: false,
       form: {
         name: '',
-        region: ''
       }
     };
-
-    this.table = {
-      columns: [
-        {
-          label: "日期",
-          prop: "date",
-          width: 150
-        },
-        {
-          label: "姓名",
-          prop: "name",
-          width: 100
-        },
-        {
-          label: "地址",
-          prop: "address"
-        }
-      ],
-      data: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
-    };
   }
+
+  show = () => {
+    this.setState({
+      dialogVisible3: true
+    })
+  };
+
+  addClass = async () => {
+    let flag = false;
+    this.props.classStore.list.map((v, i) => {
+      if (v.className === this.state.form.name) {
+        flag = true;
+      }
+    });
+    if (flag) {
+      Message("不能添加重复班级");
+    } else {
+      this.setState({fullscreen: true});
+      let result = await addClass(this.state.form);
+      this.setState({fullscreen: false});
+      if (result.code === 1) {
+        Message({
+          message: '添加成功',
+          type: 'success'
+        });
+        //本地添加数据
+        this.props.classStore.add(new ClassItem().from({
+          id: result.data.data.id,
+          className: this.state.form.name,
+          isActive: 1
+        }));
+
+      } else {
+        Message.error("发生错误");
+      }
+      this.setState({dialogVisible3: false});
+      this.state.form['name'] = "";
+    }
+  };
+
+  onChange(key, value) {
+    this.state.form[key] = value;
+    this.forceUpdate();
+  }
+
   render() {
     return (
       <div>
-        <Button type="text" onClick={ () => this.setState({ dialogVisible3: true }) } type="text">打开嵌套表单的 Dialog</Button>
         <Dialog
-          title="收货地址"
+          title="添加班级"
           visible={this.state.dialogVisible3}
           onCancel={() => this.setState({dialogVisible3: false})}
         >
           <Dialog.Body>
             <Form model={this.state.form}>
-              <Form.Item label="活动名称" labelWidth="120">
-                <Input value={this.state.form.name}></Input>
-              </Form.Item>
-              <Form.Item label="活动区域" labelWidth="120">
-                <Select value={this.state.form.region} placeholder="请选择活动区域">
-                  <Select.Option label="区域一" value="shanghai"></Select.Option>
-                  <Select.Option label="区域二" value="beijing"></Select.Option>
-                </Select>
+              <Form.Item label="班级名称" labelWidth="120">
+                <Input value={this.state.form.name} onChange={this.onChange.bind(this, 'name')}/>
               </Form.Item>
             </Form>
           </Dialog.Body>
 
           <Dialog.Footer className="dialog-footer">
             <Button onClick={() => this.setState({dialogVisible3: false})}>取 消</Button>
-            <Button type="primary" onClick={() => this.setState({dialogVisible3: false})}>确 定</Button>
+            <Button type="primary" onClick={this.addClass}>确 定</Button>
           </Dialog.Footer>
         </Dialog>
+        {
+          this.state.fullscreen && <Loading fullscreen={true}/>
+        }
       </div>
     );
   }

@@ -30,37 +30,41 @@ async function getClassList(ctx) {
 async function bindStudentInfo(ctx) {
   console.log(ctx.request.body);
   if (ctx.state.$wxInfo.loginState) {
-
-    //查询是否已经绑定
-    let resultOne = await mysql("id").from("cStudentInfo").where("open_id", ctx.state.$wxInfo.userinfo.openId);
-    if (resultOne.length > 0) {
+    if (ctx.request.body.studentId === "" || ctx.request.body.classId === "") {
       ctx.state.code = 422;
-      ctx.state.data = {message: "此用户已经绑定"};
+      ctx.state.data = {message: "请准确填写信息"};
     } else {
-
-      let resultFour = await mysql("*").from("cStudentInfo").where("studentId", ctx.request.body.studentId);
-      if (resultFour.length > 0) {
+      //查询是否已经绑定
+      let resultOne = await mysql("id").from("cStudentInfo").where("open_id", ctx.state.$wxInfo.userinfo.openId);
+      if (resultOne.length > 0) {
         ctx.state.code = 422;
-        ctx.state.data = {message: "此学号已经绑定，如果有疑问，请联系辅导员"};
+        ctx.state.data = {message: "此用户已经绑定"};
       } else {
-        let resultInfo = await mysql.select('*').from("cSessionInfo").where("open_id", ctx.state.$wxInfo.userinfo.openId);
-        //拿到openId;
-        let openId = ctx.state.$wxInfo.userinfo.openId;
-        let uuid = resultInfo[0].uuid;
-        let name = "";
-        let classId = ctx.request.body.classId;
-        let studentId = ctx.request.body.studentId;
 
-        let insertResult = await mysql("cStudentInfo").insert({
-          open_id: openId,
-          uuid: uuid,
-          name: name,
-          classId: classId,
-          studentId: studentId
-        });
-        console.log(insertResult, "增加的结果");
-        ctx.state.code = 1;
-        ctx.state.data = {message: "绑定成功"};
+        let resultFour = await mysql("*").from("cStudentInfo").where("studentId", ctx.request.body.studentId);
+        if (resultFour.length > 0) {
+          ctx.state.code = 422;
+          ctx.state.data = {message: "此学号已经绑定，如果有疑问，请联系辅导员"};
+        } else {
+          let resultInfo = await mysql.select('*').from("cSessionInfo").where("open_id", ctx.state.$wxInfo.userinfo.openId);
+          //拿到openId;
+          let openId = ctx.state.$wxInfo.userinfo.openId;
+          let uuid = resultInfo[0].uuid;
+          let name = "";
+          let classId = ctx.request.body.classId;
+          let studentId = ctx.request.body.studentId;
+
+          let insertResult = await mysql("cStudentInfo").insert({
+            open_id: openId,
+            uuid: uuid,
+            name: name,
+            classId: classId,
+            studentId: studentId
+          });
+          console.log(insertResult, "增加的结果");
+          ctx.state.code = 1;
+          ctx.state.data = {message: "绑定成功"};
+        }
       }
     }
   } else {

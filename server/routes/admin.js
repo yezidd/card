@@ -14,4 +14,10 @@ router.get("/card/not/list/:year/:month/:day", controllers.admin.getNotCardList)
 
 router.get("/class/list", controllers.admin.getAdminClassList);
 
+router.post("/class/add", controllers.admin.postAddClass);
+
+router.post("/class/update", controllers.admin.postUpdateClass);
+
+router.post("/class/allDel", controllers.admin.postDelAllClass);
+
 module.exports = router;
