@@ -1,0 +1,13 @@
+{
+  "presets": [
+    "react",
+    "stage-0",
+    "env"
+  ],
+  "plugins": [
+    "syntax-decorators",
+    "transform-decorators-legacy",
+    "transform-class-properties",
+    "transform-runtime"
+  ]
+}
