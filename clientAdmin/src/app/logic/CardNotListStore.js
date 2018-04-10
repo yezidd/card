@@ -2,6 +2,7 @@ import {observable} from 'mobx';
 import URI from 'urijs';
 import {get} from './rpc';
 import moment from "moment";
+import globalData from "./GlobalDataStore";
 
 export class CardNotListStore {
   @observable
@@ -28,8 +29,11 @@ export class CardNotListStore {
 
   constructor() {
     this.year = new Date().getFullYear();
-    this.month = new Date().getMonth();
-    this.day = new Date().getDay();
+    this.month = new Date().getMonth() + 1;
+    this.day = new Date().getDate();
+    if(globalData.selectData===null){
+      globalData.selectData = new Date();
+    }
     this.page = 1;
   }
 

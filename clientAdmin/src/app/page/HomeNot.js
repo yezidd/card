@@ -8,6 +8,7 @@ import moment from "moment";
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
 import {CardNotListStore} from "../logic/CardNotListStore";
+import globalData from "../logic/GlobalDataStore";
 
 
 //打卡数据界面
@@ -33,7 +34,20 @@ export default class HomeNot extends Component {
         ]
    */
   async componentWillMount() {
-    await this.cardNotListStore.getList()
+    if (globalData.selectData) {
+      let date = moment(globalData.selectData).format("YYYY-MM-DD");
+      console.log(globalData, "--------")
+      let year = date.split("-")[0];
+      let month = date.split("-")[1];
+      let day = date.split("-")[2];
+      this.cardNotListStore.year = Number(year);
+      this.cardNotListStore.month = Number(month);
+      this.cardNotListStore.day = Number(day);
+      this.cardNotListStore.page = 1;
+    }
+    this.loading = true;
+    await this.cardNotListStore.getList();
+    this.loading = false;
   }
 
 
@@ -75,8 +89,7 @@ export default class HomeNot extends Component {
   };
 
   render() {
-    const {selectDate} = this.state;
-    console.log(window.screen.availHeight)
+    // const {selectDate} = this.state;
     return (
       <div>
         <Layout.Row>
@@ -85,7 +98,7 @@ export default class HomeNot extends Component {
               <div className="select-date-view">
                 <p className="date-title-view">选择数据日期:</p>
                 <DatePicker
-                  value={selectDate}
+                  value={globalData.selectData}
                   placeholder="选择日期"
                   onChange={async (dateSelect) => {
                     let date = moment(dateSelect).format("YYYY-MM-DD");
@@ -100,7 +113,8 @@ export default class HomeNot extends Component {
                     this.loading = true;
                     await this.cardNotListStore.getList();
                     this.loading = false;
-                    this.setState({selectDate: dateSelect});
+                    console.log(dateSelect, "-----");
+                    globalData.selectData = dateSelect;
 
                   }}
                   disabledDate={time => time.getTime() > Date.now() - 8.64e7 + 24 * 3600 * 1000}
