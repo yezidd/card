@@ -24,4 +24,8 @@ router.post("/work/update", controllers.admin.postSubWork);
 
 router.get("/work/current", controllers.admin.getCurrentWork);
 
+router.get("/student/list", controllers.admin.getStudentList);
+
+router.post("/student/del", controllers.admin.postDelBindStudent);
+
 module.exports = router;

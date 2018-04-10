@@ -76,6 +76,7 @@ async function getCardList(ctx) {
             this.on('cStudentInfo.classId', '=', 'cClass.id')
           })
         });
+    console.log(cardList, "----")
     ctx.state.code = 1;
     ctx.state.data = {
       count: cardListLength[0]["count(`uuid`)"],
@@ -176,23 +177,16 @@ async function postAddClass(ctx) {
   if (ctx.request.body.name) {
     let name = ctx.request.body.name;
     console.log(name);
-    try {
-      let result = await mysql("cClass").insert({
-        className: name
-      });
-      if (result) {
-        ctx.state.code = 1;
-        ctx.state.data = {
-          data: {
-            id: result[0]
-          },
-          message: "ok"
-        }
-      }
-    } catch (err) {
-      ctx.state.code = 0;
+    let result = await mysql("cClass").insert({
+      className: name
+    });
+    if (result) {
+      ctx.state.code = 1;
       ctx.state.data = {
-        message: "发生错误"
+        data: {
+          id: result[0]
+        },
+        message: "ok"
       }
     }
   } else {
@@ -208,36 +202,30 @@ async function postUpdateClass(ctx) {
   if (ctx.request.body.id) {
     let id = ctx.request.body.id;
     let isActive = ctx.request.body.isActive;
-    try {
 
-      let resultOne = await mysql("cClass").where("id", id);
-      if (resultOne.length === 0) {
+
+    let resultOne = await mysql("cClass").where("id", id);
+    if (resultOne.length === 0) {
+      ctx.state.code = 0;
+      ctx.state.data = {
+        message: "发生错误"
+      }
+    } else {
+      let result = await mysql('cClass')
+        .where('id', id)
+        .update({
+          isActive: resultOne[0].isActive === 1 ? 0 : 1,
+        });
+      if (result) {
+        ctx.state.code = 1;
+        ctx.state.data = {
+          message: "ok"
+        }
+      } else {
         ctx.state.code = 0;
         ctx.state.data = {
           message: "发生错误"
         }
-      } else {
-        let result = await mysql('cClass')
-          .where('id', id)
-          .update({
-            isActive: resultOne[0].isActive === 1 ? 0 : 1,
-          });
-        if (result) {
-          ctx.state.code = 1;
-          ctx.state.data = {
-            message: "ok"
-          }
-        } else {
-          ctx.state.code = 0;
-          ctx.state.data = {
-            message: "发生错误"
-          }
-        }
-      }
-    } catch (err) {
-      ctx.state.code = 0;
-      ctx.state.data = {
-        message: "发生错误"
       }
     }
   } else {
@@ -321,8 +309,88 @@ async function getCurrentWork(ctx) {
   }
 }
 
-//获取当前进行的任务详情
+//获取学生绑定信息
+async function getStudentList(ctx) {
+  let page = isNaN(Number(ctx.query.page)) ? 1 : Number(ctx.query.page);
 
+  let resultLength =
+    await mysql("cStudentInfo")
+      .count("cStudentInfo.uuid")
+      .limit(PER_PAGE)
+      .offset((page - 1) * 10)
+      .join('cClass', function () {
+        this.on(function () {
+          this.on('cStudentInfo.classId', '=', 'cClass.id')
+        })
+      })
+      .join('cSessionInfo', function () {
+        this.on(function () {
+          this.on('cStudentInfo.open_id', '=', 'cSessionInfo.open_id')
+        })
+      });
+  console.log(resultLength);
+  let result = await mysql
+    .select(
+      "cStudentInfo.uuid",
+      "cStudentInfo.open_id",
+      "cStudentInfo.name",
+      "cClass.className",
+      "cStudentInfo.classId",
+      "cStudentInfo.studentId",
+      "cSessionInfo.last_visit_time",
+      "cSessionInfo.user_info"
+    )
+    .from("cStudentInfo")
+    .limit(PER_PAGE)
+    .offset((page - 1) * 10)
+    .join('cClass', function () {
+      this.on(function () {
+        this.on('cStudentInfo.classId', '=', 'cClass.id')
+      })
+    })
+    .join('cSessionInfo', function () {
+      this.on(function () {
+        this.on('cStudentInfo.open_id', '=', 'cSessionInfo.open_id')
+      })
+    });
+  ctx.state.code = 1;
+  ctx.state.data = {
+    count: resultLength[0]["count(`cStudentInfo`.`uuid`)"],
+    pageCount: Math.ceil(resultLength[0]["count(`cStudentInfo`.`uuid`)"] / PER_PAGE),
+    perPage: PER_PAGE,
+    currentPage: page,
+    data: result
+  };
+}
+
+//解绑学生信息
+async function postDelBindStudent(ctx) {
+  const {open_id, uuid} = ctx.request.body;
+  if (open_id && uuid) {
+    //这个差不查询都没关系，直接删除数据
+    let result = await mysql('cStudentInfo')
+      .where('open_id', open_id)
+      .where('uuid', uuid)
+      .del();
+    console.log("---删除结果",result);
+    if (result) {
+      ctx.state.code = 1;
+      ctx.state.data = {
+        data: result
+      }
+    } else {
+      ctx.state.code = 0;
+      ctx.state.data = {
+        message: "发生错误"
+      }
+    }
+  } else {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      message: "发生错误"
+    }
+  }
+}
 
 module.exports = {
   getCardList,
@@ -332,5 +400,7 @@ module.exports = {
   postUpdateClass,
   postDelAllClass,
   postSubWork,
-  getCurrentWork
+  getCurrentWork,
+  getStudentList,
+  postDelBindStudent
 };
