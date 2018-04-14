@@ -16,6 +16,7 @@ import StudentManage from "./page/StudentManage";
 import WorkManage from "./page/WorkManage";
 import ClassManage from "./page/ClassManage";
 import HomeNot from "./page/HomeNot";
+import Demo from "./page/Demo";
 
 export default class App extends Component {
   render() {
@@ -30,6 +31,7 @@ export default class App extends Component {
             <Route exact path="/student" component={StudentManage}/>
             <Route exact path="/statistics" component={Statistics}/>
             <Route exact path="/homeNot" component={HomeNot}/>
+            <Route exact path="/demo" component={Demo}/>
           </Switch>
         </div>
       </Router>

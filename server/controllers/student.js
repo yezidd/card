@@ -28,7 +28,6 @@ async function getClassList(ctx) {
 
 //学生信息绑定
 async function bindStudentInfo(ctx) {
-  console.log(ctx.request.body);
   if (ctx.state.$wxInfo.loginState) {
     if (ctx.request.body.studentId === "" || ctx.request.body.classId === "") {
       ctx.state.code = 422;

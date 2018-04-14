@@ -34,7 +34,6 @@ export class CardListStore {
     if(globalData.selectData===null){
       globalData.selectData = new Date();
     }
-
     this.page = 1;
   }
 
