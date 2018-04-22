@@ -17,6 +17,9 @@ import WorkManage from "./page/WorkManage";
 import ClassManage from "./page/ClassManage";
 import HomeNot from "./page/HomeNot";
 import Demo from "./page/Demo";
+import ActivityLoad from "./page/activity/ActivityLoad";
+import ActivityType from "./page/activity/ActivityType";
+import ActivityList from "./page/activity/ActivityList";
 
 export default class App extends Component {
   render() {
@@ -25,12 +28,11 @@ export default class App extends Component {
         <div className="app-body">
           <NavBar/>
           <Switch>
-            <Route exact path="/" component={Home}/>
+            <Route exact path="/activity/load" component={ActivityLoad}/>
+            <Route exact path="/activity/type" component={ActivityType}/>
+            <Route exact path="/activity/list" component={ActivityList}/>
             <Route exact path="/class" component={ClassManage}/>
-            <Route exact path="/work" component={WorkManage}/>
             <Route exact path="/student" component={StudentManage}/>
-            <Route exact path="/statistics" component={Statistics}/>
-            <Route exact path="/homeNot" component={HomeNot}/>
             <Route exact path="/demo" component={Demo}/>
           </Switch>
         </div>

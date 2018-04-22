@@ -202,8 +202,6 @@ async function postUpdateClass(ctx) {
   if (ctx.request.body.id) {
     let id = ctx.request.body.id;
     let isActive = ctx.request.body.isActive;
-
-
     let resultOne = await mysql("cClass").where("id", id);
     if (resultOne.length === 0) {
       ctx.state.code = 0;

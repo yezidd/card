@@ -86,7 +86,7 @@ module.exports = {
     port: 9090, //端口你可以自定义,
     proxy: {
       '/admin/*': {
-        target: 'http://localhost:5757',
+        target: 'http://localhost:5757/',
         secure: false,
         changeOrigin: true,
         logLevel: "debug",

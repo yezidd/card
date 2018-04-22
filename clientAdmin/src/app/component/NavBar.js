@@ -12,14 +12,17 @@ class NavBar extends Component {
       <div>
         <Menu theme="dark" defaultActive={this.getDefaultActive()} className="el-menu-demo" mode="horizontal"
               onSelect={this.onSelect.bind(this)}>
-          <Menu.Item index="4">未打卡数据</Menu.Item>
-          <Menu.Item index="1">打卡数据</Menu.Item>
           <Menu.SubMenu index="2" title="我的管理">
             <Menu.Item index="2-1">管理班级</Menu.Item>
-            <Menu.Item index="2-2">管理打卡任务</Menu.Item>
             <Menu.Item index="2-3">管理学生绑定信息</Menu.Item>
           </Menu.SubMenu>
-          <Menu.Item index="3">打卡数据统计</Menu.Item>
+          <Menu.SubMenu index="3" title="活动管理">
+            <Menu.Item index="3-1">活动发布管理</Menu.Item>
+            <Menu.Item index="3-2">活动管理</Menu.Item>
+            <Menu.Item index="3-3">活动报名管理</Menu.Item>
+            <Menu.Item index="3-4">活动签到管理</Menu.Item>
+            <Menu.Item index="3-5">活动类型管理</Menu.Item>
+          </Menu.SubMenu>
         </Menu>
       </div>
     );
@@ -28,41 +31,34 @@ class NavBar extends Component {
   getDefaultActive = () => {
     console.log(this.props);
     switch (this.props.location.pathname) {
-      case '/':
-        return "1";
       case "/class":
         return "2-1";
-      case "/work":
-        return "2-2";
       case "/student":
         return "2-3";
-      case "/statistics":
-        return "3";
-      case "/homeNot":
-        return "4";
-      default:
-        return "1";
+      case "/activity/type":
+        return "3-5";
+      case "/activity/load":
+        return "3-1";
+      case "/activity/list":
+        return "3-2";
     }
   };
 
   onSelect(index) {
-    if (index === "1") {
-      this.props.history.push("/");
-    }
     if (index === "2-1") {
       this.props.history.push("/class");
-    }
-    if (index === "2-2") {
-      this.props.history.push("/work");
     }
     if (index === "2-3") {
       this.props.history.push("/student");
     }
-    if (index === "3") {
-      this.props.history.push("/statistics");
+    if (index === "3-1") {
+      this.props.history.push("/activity/load")
     }
-    if (index === "4") {
-      this.props.history.push("/homeNot");
+    if (index === "3-2") {
+      this.props.history.push("/activity/list")
+    }
+    if (index === "3-5") {
+      this.props.history.push("/activity/type")
     }
   }
 }

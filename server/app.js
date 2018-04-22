@@ -12,9 +12,13 @@ app.use(response)
 app.use(bodyParser())
 
 // 引入路由分发
-const router = require('./routes');
+// const router = require('./routes');
 const routerAdmin = require("./routes/admin");
-app.use(router.routes());
+const routerActivity = require("./routes/activity");
+const routerClient = require("./routes/client");
+// app.use(router.routes());
 app.use(routerAdmin.routes());
+app.use(routerClient.routes());
+app.use(routerActivity.routes());
 // 启动程序，监听端口
 app.listen(config.port, () => debug(`listening on port ${config.port}`))

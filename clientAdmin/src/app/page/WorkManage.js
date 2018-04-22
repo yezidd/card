@@ -173,6 +173,16 @@ export default class WorkManage extends Component {
     e.preventDefault();
 
     this.refs.form.resetFields();
+    this.setState({
+      form: {
+        title: "",
+        mess: "",
+        startTime: null,
+        timeLong: "",
+        distance: "",
+        fullscreen: false,
+      }
+    });
   }
 
   onChange(key, value) {

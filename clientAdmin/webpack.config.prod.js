@@ -20,8 +20,7 @@ module.exports = {
       "lodash",
       "element-react",
       "element-theme-default",
-      "react-router-dom",
-      "react-router"
+      "react-router-dom"
     ]//分离第三方库
   },
   output: {

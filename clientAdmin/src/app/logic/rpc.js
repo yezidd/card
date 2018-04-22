@@ -7,7 +7,8 @@ export default RPC;
 
 var localStorage = window.localStorage;
 const KEY_TOKEN = 'accessToken';
-const URL_PRE = "/admin"
+
+const URL_PRE = "/admin";
 
 
 let token = null;
