@@ -20,6 +20,7 @@ import Demo from "./page/Demo";
 import ActivityLoad from "./page/activity/ActivityLoad";
 import ActivityType from "./page/activity/ActivityType";
 import ActivityList from "./page/activity/ActivityList";
+import ActivitySign from "./page/activity/ActivitySign";
 
 export default class App extends Component {
   render() {
@@ -31,6 +32,7 @@ export default class App extends Component {
             <Route exact path="/activity/load" component={ActivityLoad}/>
             <Route exact path="/activity/type" component={ActivityType}/>
             <Route exact path="/activity/list" component={ActivityList}/>
+            <Route exact path="/activity/sign" component={ActivitySign}/>
             <Route exact path="/class" component={ClassManage}/>
             <Route exact path="/student" component={StudentManage}/>
             <Route exact path="/demo" component={Demo}/>

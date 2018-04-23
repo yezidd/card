@@ -8,6 +8,7 @@ import {addActivity} from "../../logic/activity/ActivityLoadStore";
 import {observer} from 'mobx-react';
 import {TypeListStore} from "../../logic/activity/TypeListStore";
 import {observable} from 'mobx';
+import MapModal from "../../component/MapModal";
 
 //发布活动任务
 @observer
@@ -92,7 +93,7 @@ export default class ActivityLoad extends Component {
     this.forceUpdate();
   }
 
-  handleReset(e){
+  handleReset(e) {
     e.preventDefault();
 
     this.setState({
@@ -114,6 +115,9 @@ export default class ActivityLoad extends Component {
     });
   }
 
+  toLoadPoint = ()=>{
+    window.open("http://api.map.baidu.com/lbsapi/getpoint/index.html");
+  }
 
   render() {
     return (
@@ -167,7 +171,7 @@ export default class ActivityLoad extends Component {
           </Form.Item>
 
           <Form.Item label="活动地点经纬度">
-            <Layout.Col span="11">
+            <Layout.Col span="9">
               <Form.Item prop="lon" labelWidth="0px">
                 <Input
                   value={this.state.form.lon}
@@ -177,7 +181,7 @@ export default class ActivityLoad extends Component {
               </Form.Item>
             </Layout.Col>
             <Layout.Col className="line" span="2">-</Layout.Col>
-            <Layout.Col span="11">
+            <Layout.Col span="9">
               <Form.Item prop="lat" labelWidth="0px">
                 <Input
                   value={this.state.form.lat}
@@ -185,6 +189,10 @@ export default class ActivityLoad extends Component {
                   placeholder={"活动地点纬度"}
                 />
               </Form.Item>
+            </Layout.Col>
+            <Layout.Col className="line" span="2">-</Layout.Col>
+            <Layout.Col span="2">
+              <Button type="primary" onClick={()=>this.toLoadPoint()}>跳转获取坐标</Button>
             </Layout.Col>
           </Form.Item>
 
@@ -245,6 +253,7 @@ export default class ActivityLoad extends Component {
             <Button onClick={this.handleReset.bind(this)}>重置</Button>
           </Form.Item>
         </Form>
+        <MapModal ref={ref => this.mapModal = ref}/>
       </div>
     )
   }

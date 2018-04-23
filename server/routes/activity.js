@@ -24,6 +24,9 @@ router.post("/activity/check/update",controllers.activity.postUpdateCheckStatus)
 router.post("/activity/finish",controllers.activity.postUpdateFinishStatus);
 
 //下载excel数据
-router.get("/download",controllers.downExcel);
+router.get("/download/sign",controllers.downExcel);
+
+//获取到签到信息等
+router.get("/activity/sign",controllers.activity.getActivitySignList);
 
 module.exports = router;

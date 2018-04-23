@@ -166,21 +166,49 @@ async function postSignActivity(ctx){
           studentId,
           phone
         });
+        console.log("-----bind-----",bind);
         if(bind){
           //添加数据成功之后 选取 报名数量来刷新活动报名人数
           //获得数量之后刷新活动 的报名人数
           let signNum =await mysql.count('id').from("cSign")
           .where("activityId","=",activityId);
-          let updateNum = await mysql("cActivity").where("id","=",activityId)
-          .update({
-            signNum:signNum[0]['count(`id`)']
-          });
-          if(updateNum){
-            ctx.state.code = 1;
+
+          //获取活动额定报名人数
+          let activityResult = await mysql("cActivity").select("*")
+            .where("id","=",activityId);
+
+          //获取到额定的报名人数
+          let personNum = activityResult[0].personNum;
+
+          if(signNum<=personNum){
+            //人数不满，那么就更新报名人数
+            let updateNum = await mysql("cActivity").where("id","=",activityId)
+              .update({
+                signNum:signNum[0]['count(`id`)']
+              });
+            if(updateNum){
+              ctx.state.code = 1;
+            }else{
+              ctx.state.code = 0;
+              ctx.state.data={
+                message:"发生错误"
+              }
+            }
           }else{
-            ctx.state.code = 0;
-            ctx.state.data={
-              message:"发生错误"
+            //报名人数已经满了的话那么就删掉这个报名记录
+            let delSign  =await mysql('cSign')
+              .where('id', bind)
+              .del();
+            if(delSign){
+              ctx.state.code = 0;
+              ctx.state.data={
+                message:"报名人数已满,请刷新页面"
+              }
+            }else{
+              ctx.state.code = 0;
+              ctx.state.data={
+                message:"发生错误"
+              }
             }
           }
         }else{

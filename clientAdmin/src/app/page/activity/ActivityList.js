@@ -7,9 +7,10 @@ import {ActivityListStore, finishActivityApi, updateCheckStatusApi} from "../../
 import {observer} from 'mobx-react';
 import {observable} from 'mobx';
 import './activity.css'
+import {withRouter} from "react-router-dom";
 
 @observer
-export default class ActivityList extends Component {
+class ActivityList extends Component {
 
   activityListStore = new ActivityListStore();
 
@@ -44,6 +45,19 @@ export default class ActivityList extends Component {
                     <Button type="primary"
                             onClick={() => this.updateCheckStatus(data)}>{data.isCheck ? '关闭签到' : '开启签到'}</Button>
                   </Tooltip>
+                </span>
+            )
+          }
+        },
+        {
+          label: "操作",
+          fixed: 'left',
+          width: 160,
+          align: "center",
+          render: (data) => {
+            return (
+              <span>
+                <Button type="primary" onClick={()=>this.toSignList(data)}>点击查看报名情况</Button>
                 </span>
             )
           }
@@ -138,6 +152,13 @@ export default class ActivityList extends Component {
   @observable
   loading = false;
 
+
+  //跳转到报名页面
+  toSignList = (data)=>{
+    console.log(data.id)
+    this.props.history.push("/activity/sign?id="+data.id);
+  }
+
   //更新是否签到的状态
   updateCheckStatus = async (data) => {
     this.loading = true;
@@ -218,3 +239,5 @@ export default class ActivityList extends Component {
     );
   }
 }
+
+export default  withRouter(ActivityList);

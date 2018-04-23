@@ -239,6 +239,44 @@ async function postUpdateFinishStatus(ctx) {
     }
   }
 }
+//获取到一个活动的签到情况
+async function getActivitySignList(ctx){
+  let id = ctx.query.id;
+  let page = isNaN(Number(ctx.query.page)) ? 1 : Number(ctx.query.page);
+
+  let signLength = await mysql("cSign").count("cSign.id")
+    .join('cStudentInfo',function(){
+      this.on("cStudentInfo.open_id",'=','cSign.open_id')
+    })
+    .join('cClass',function(){
+      this.on("cStudentInfo.classId",'=','cClass.id')
+    })
+    .where("cSign.activityId","=",id);
+
+  let signList = await mysql("cSign").select("*")
+    .join('cStudentInfo',function(){
+      this.on("cStudentInfo.open_id",'=','cSign.open_id')
+    })
+    .join('cClass',function(){
+      this.on("cStudentInfo.classId",'=','cClass.id')
+    })
+    .where("cSign.activityId","=",id)
+    .limit(PER_PAGE)
+    .offset((page-1)*10)
+    .orderBy('cSign.createTime', 'desc');
+
+  console.log(signLength)
+
+    ctx.state.code = 1;
+    ctx.state.data = {
+      count: signLength[0]["count(`cSign`.`id`)"],
+      pageCount: Math.ceil(signLength[0]["count(`cSign`.`id`)"] / PER_PAGE),
+      perPage: PER_PAGE,
+      currentPage: page,
+      data: signList
+    }
+
+}
 
 module.exports = {
   getActivityTypeList,
@@ -247,5 +285,6 @@ module.exports = {
   postAddActivity,
   getActivityList,
   postUpdateCheckStatus,
-  postUpdateFinishStatus
+  postUpdateFinishStatus,
+  getActivitySignList
 };
