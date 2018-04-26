@@ -57,14 +57,21 @@ async function postActivityList(ctx) {
 
       console.log("====获取到的活动列表====", data);
 
-
+      let dataReal = [];
+      //根据安排的班级名来过滤掉不符合的活动内容
+      data.forEach((v, i) => {
+        let inClass = JSON.parse(v.pointClass);
+        if (inClass.indexOf(bindResult[0].classId) !== -1) {
+          dataReal.push(v);
+        }
+      });
       ctx.state.code = 1;
       ctx.state.data = {
         count: dataLength[0]["count(`id`)"],
         pageCount: Math.ceil(dataLength[0]["count(`id`)"] / PER_PAGE),
         perPage: PER_PAGE,
         currentPage: page,
-        data: data
+        data: dataReal
       }
     }
   } else {
