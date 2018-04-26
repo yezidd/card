@@ -153,14 +153,17 @@ async function getNotCardList(ctx) {
 //获取班级信息
 async function getAdminClassList(ctx) {
   let page = isNaN(Number(ctx.query.page)) ? 1 : Number(ctx.query.page);
+
+  let gid = ctx.query.gid;
+
   //获取数量
   let classResultLength = await mysql
     .count("id")
-    .from("cClass");
+    .from("cClass").where("gid", "=", gid);
   //获取数据
   let classResult = await mysql
     .select("*")
-    .from("cClass");
+    .from("cClass").where("gid", "=", gid);
   console.log(classResult, classResultLength);
   ctx.state.code = 1;
   ctx.state.data = {
@@ -176,9 +179,12 @@ async function getAdminClassList(ctx) {
 async function postAddClass(ctx) {
   if (ctx.request.body.name) {
     let name = ctx.request.body.name;
+    let gid = ctx.request.body.gid;
+    console.log('------gid', gid);
     console.log(name);
     let result = await mysql("cClass").insert({
-      className: name
+      className: name,
+      gid: gid
     });
     if (result) {
       ctx.state.code = 1;
@@ -370,7 +376,7 @@ async function postDelBindStudent(ctx) {
       .where('open_id', open_id)
       .where('uuid', uuid)
       .del();
-    console.log("---删除结果",result);
+    console.log("---删除结果", result);
     if (result) {
       ctx.state.code = 1;
       ctx.state.data = {
@@ -390,6 +396,171 @@ async function postDelBindStudent(ctx) {
   }
 }
 
+//获取到所有的年级列表
+async function getGradeList(ctx) {
+  //获取到学院的id
+  let cid = ctx.query.cid;
+  let gradeList = await mysql("cGrade").select("*").where("cid", "=", cid);
+
+  if (gradeList) {
+    ctx.state.code = 1;
+    ctx.state.data = gradeList;
+  } else {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      message: "发生错误"
+    }
+  }
+}
+
+//更新年级的状态
+async function postUpdateGrade(ctx) {
+  if (ctx.request.body.id) {
+    let id = ctx.request.body.id;
+    let isActive = ctx.request.body.isActive;
+    let resultOne = await mysql("cGrade").where("id", id);
+    if (resultOne.length === 0) {
+      ctx.state.code = 0;
+      ctx.state.data = {
+        message: "发生错误"
+      }
+    } else {
+      let result = await mysql('cGrade')
+        .where('id', id)
+        .update({
+          isActive: resultOne[0].isActive === 1 ? 0 : 1,
+        });
+      if (result) {
+        ctx.state.code = 1;
+        ctx.state.data = {
+          message: "ok"
+        }
+      } else {
+        ctx.state.code = 0;
+        ctx.state.data = {
+          message: "发生错误"
+        }
+      }
+    }
+  } else {
+    ctx.state.code = -1;
+    ctx.state.data = {
+      message: "服务器错误"
+    }
+  }
+}
+
+//添加年级--->传递id为学院的id
+async function postAddGrade(ctx) {
+  //学院id
+  let collegeId = ctx.request.body.collegeId;
+
+  //年级名字
+  let gradeName = ctx.request.body.gradeName;
+
+  //先查询是否出现重名
+  let addRepeatResult = await mysql("cGrade").select("*")
+    .where("cid", "=", collegeId).where("gradeName", "=", gradeName);
+
+  if (addRepeatResult.length === 0) {
+    //没有重复的话就添加这个东西
+    let addResult = await mysql("cGrade").insert({
+      gradeName,
+      cid: collegeId
+    });
+    if (addResult) {
+      ctx.state.code = 1;
+      ctx.state.data = {
+        id: addResult[0]
+      }
+    } else {
+      ctx.state.code = 0;
+      ctx.state.data = {
+        message: "发生错误"
+      }
+    }
+  } else {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      message: "年级名重复"
+    }
+  }
+}
+
+//获取到所有的学院
+async function getCollegeList(ctx) {
+  let collegeList = await mysql("cCollege")
+    .select("*");
+  if (collegeList) {
+    ctx.state.code = 1;
+    ctx.state.data = collegeList;
+  } else {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      message: "发生错误"
+    };
+  }
+}
+
+//学院的禁用和解禁
+async function postUpdateCollege(ctx) {
+  //传递的那条数据的id
+  if (ctx.request.body.id) {
+    let id = ctx.request.body.id;
+    let isActive = ctx.request.body.isActive;
+    let resultOne = await mysql("cCollege").where("id", id);
+    if (resultOne.length === 0) {
+      ctx.state.code = 0;
+      ctx.state.data = {
+        message: "发生错误"
+      }
+    } else {
+      let result = await mysql('cCollege')
+        .where('id', id)
+        .update({
+          isActive: resultOne[0].isActive === 1 ? 0 : 1,
+        });
+      if (result) {
+        ctx.state.code = 1;
+        ctx.state.data = {
+          message: "ok"
+        }
+      } else {
+        ctx.state.code = 0;
+        ctx.state.data = {
+          message: "发生错误"
+        }
+      }
+    }
+  } else {
+    ctx.state.code = -1;
+    ctx.state.data = {
+      message: "服务器错误"
+    }
+  }
+}
+
+//获取到选取班级的列表的接口
+async function getClassSelect(ctx) {
+  let cid = ctx.query.cid;
+  let sql = `SELECT * FROM cGrade,cClass where cGrade.cid = ${cid} AND cGrade.isActive = 1 AND cClass.isActive = 1 AND cGrade.id = cClass.gid`;
+  let result = await mysql.schema.raw(sql);
+  console.log(clear(result[0]));
+  if (result) {
+    ctx.state.code = 1;
+    ctx.state.data = clear(result[0]);
+  } else {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      message: "发生错误"
+    }
+  }
+}
+
+function clear(data) {
+  return JSON.parse(JSON.stringify(data));
+}
+
 module.exports = {
   getCardList,
   getNotCardList,
@@ -400,5 +571,11 @@ module.exports = {
   postSubWork,
   getCurrentWork,
   getStudentList,
-  postDelBindStudent
+  postDelBindStudent,
+  getGradeList,
+  postUpdateGrade,
+  postAddGrade,
+  getCollegeList,
+  postUpdateCollege,
+  getClassSelect
 };

@@ -4,10 +4,10 @@
 
 import URI from 'urijs';
 import {get, post} from '../rpc';
+import {observable} from "mobx";
 
 export async function addActivity(obj) {
   const uri = new URI("/activity/add");
-  console.log(obj,"------")
   try {
     let result = await post(uri, {
       ...obj

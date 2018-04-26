@@ -35,11 +35,22 @@ export default class ActivitySign extends Component {
           prop:"name"
         },
         {
-          label:"手机号",
-          prop:'phone'
+          label:"报名信息",
+          render:(data)=>{
+            console.log(data,"======这个数据")
+            return (
+                <div>
+                  {
+                    data.needCheckData.map((v,i)=>
+                      <p key={i}>{v.name}:{v.value}</p>
+                    )
+                  }
+                </div>
+            )
+          }
         },
         {
-          label:"签到时间",
+          label:"报名时间",
           render:(data)=>{
             return(
                 <span>{moment(data.createTime).format("YYYY-MM-DD HH:mm")}</span>

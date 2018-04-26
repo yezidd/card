@@ -21,6 +21,8 @@ import ActivityLoad from "./page/activity/ActivityLoad";
 import ActivityType from "./page/activity/ActivityType";
 import ActivityList from "./page/activity/ActivityList";
 import ActivitySign from "./page/activity/ActivitySign";
+import GradeManage from "./page/GradeManage";
+import CollegeManage from "./page/CollegeManage";
 
 export default class App extends Component {
   render() {
@@ -35,6 +37,8 @@ export default class App extends Component {
             <Route exact path="/activity/sign" component={ActivitySign}/>
             <Route exact path="/class" component={ClassManage}/>
             <Route exact path="/student" component={StudentManage}/>
+            <Route exact path="/grade" component={GradeManage}/>
+            <Route exact path="/college" component={CollegeManage}/>
             <Route exact path="/demo" component={Demo}/>
           </Switch>
         </div>

@@ -22,12 +22,14 @@ async function postAddActivity(ctx) {
   //奖励的类型
   let rewardMark = ctx.request.body.rewardMark;
   //报名需求
-  let req = ctx.request.body.req;
-  let isNeedCheck = {};
+  let isNeedCheck = ctx.request.body.isNeedCheck;
 
-  req.forEach((v, i) => {
-    isNeedCheck[v] = true;
-  });
+  //目标学院id
+  let pointCollege = ctx.request.body.pointCollege;
+
+  //目标班级id
+  let pointClass = ctx.request.body.pointClass;
+
   //活动地点
   let location = ctx.request.body.location;
   //活动经纬度
@@ -39,6 +41,9 @@ async function postAddActivity(ctx) {
   let distance = ctx.request.body.distance;
   //活动的备注
   let mess = ctx.request.body.mess;
+
+  //额定人数
+  let personNum = ctx.request.body.personNum;
 
   //是否开启签到
   let isCheck = ctx.request.body.check;
@@ -55,7 +60,10 @@ async function postAddActivity(ctx) {
     distance,
     isNeedCheck: JSON.stringify(isNeedCheck),
     isActive: 1,
-    mess
+    personNum,
+    mess,
+    pointClass:JSON.stringify(pointClass),
+    pointCollege:pointCollege
   });
   if (result) {
     ctx.state.code = 1;
@@ -239,42 +247,43 @@ async function postUpdateFinishStatus(ctx) {
     }
   }
 }
+
 //获取到一个活动的签到情况
-async function getActivitySignList(ctx){
+async function getActivitySignList(ctx) {
   let id = ctx.query.id;
   let page = isNaN(Number(ctx.query.page)) ? 1 : Number(ctx.query.page);
 
   let signLength = await mysql("cSign").count("cSign.id")
-    .join('cStudentInfo',function(){
-      this.on("cStudentInfo.open_id",'=','cSign.open_id')
+    .join('cStudentInfo', function () {
+      this.on("cStudentInfo.open_id", '=', 'cSign.open_id')
     })
-    .join('cClass',function(){
-      this.on("cStudentInfo.classId",'=','cClass.id')
+    .join('cClass', function () {
+      this.on("cStudentInfo.classId", '=', 'cClass.id')
     })
-    .where("cSign.activityId","=",id);
+    .where("cSign.activityId", "=", id);
 
   let signList = await mysql("cSign").select("*")
-    .join('cStudentInfo',function(){
-      this.on("cStudentInfo.open_id",'=','cSign.open_id')
+    .join('cStudentInfo', function () {
+      this.on("cStudentInfo.open_id", '=', 'cSign.open_id')
     })
-    .join('cClass',function(){
-      this.on("cStudentInfo.classId",'=','cClass.id')
+    .join('cClass', function () {
+      this.on("cStudentInfo.classId", '=', 'cClass.id')
     })
-    .where("cSign.activityId","=",id)
+    .where("cSign.activityId", "=", id)
     .limit(PER_PAGE)
-    .offset((page-1)*10)
+    .offset((page - 1) * 10)
     .orderBy('cSign.createTime', 'desc');
 
   console.log(signLength)
 
-    ctx.state.code = 1;
-    ctx.state.data = {
-      count: signLength[0]["count(`cSign`.`id`)"],
-      pageCount: Math.ceil(signLength[0]["count(`cSign`.`id`)"] / PER_PAGE),
-      perPage: PER_PAGE,
-      currentPage: page,
-      data: signList
-    }
+  ctx.state.code = 1;
+  ctx.state.data = {
+    count: signLength[0]["count(`cSign`.`id`)"],
+    pageCount: Math.ceil(signLength[0]["count(`cSign`.`id`)"] / PER_PAGE),
+    perPage: PER_PAGE,
+    currentPage: page,
+    data: signList
+  }
 
 }
 

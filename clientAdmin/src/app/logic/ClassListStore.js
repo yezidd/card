@@ -26,10 +26,11 @@ export class ClassListStore {
     console.log(this.list);
   }
 
-  async getList() {
+  async getList(gid) {
     try {
       const uri = new URI(`/class/list`).query({
-        page: this.page
+        page: this.page,
+        gid: gid
       });
       let result = await get(uri);
       console.log(result);

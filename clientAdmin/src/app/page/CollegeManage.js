@@ -1,42 +1,25 @@
-/**
- * Created by yzdd on 2018/4/3.
- */
 import React, {Component} from 'react';
-import {Table, Layout, DatePicker, Loading, Pagination, Button, Message, MessageBox} from 'element-react'
-import './home.css';
-import moment from "moment";
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
-import {ClassListStore} from "../logic/ClassListStore";
-import AddClassModal from "../component/AddClassModal";
-import {DelAllClass, updateClass} from "../logic/ClassApiStore";
-import {withRouter} from "react-router-dom";
+import {Loading, Table, Button, Message,Layout} from "element-react";
+import {CollegeListStore} from "../logic/CollegeListStore";
+import {withRouter} from 'react-router-dom';
+import {updateCollege} from "../logic/GradeListStore";
 
-
-//打卡数据界面
+//学院管理
 @observer
-class ClassManage extends Component {
+class CollegeManage extends Component {
 
-  classListStore = new ClassListStore();
-
-  @observable
-  loading = false;
-
-  @observable
-  changeVisible = false;
-
+  collegeListStore = new CollegeListStore();
 
   async componentWillMount() {
-    console.log(this.props.location.query.gid)
-    let gid = this.props.location.query.gid;
     this.loading = true;
-    await this.classListStore.getList(gid);
+    this.collegeListStore.getList();
     this.loading = false;
   }
 
   constructor(props) {
     super(props);
-
     this.state = {
       columns: [
         {
@@ -44,8 +27,8 @@ class ClassManage extends Component {
           width: "160"
         },
         {
-          label: "班级名字",
-          prop: "className",
+          label: "学院名字",
+          prop: "collegeName",
         },
         {
           label: "激活状态",
@@ -66,7 +49,6 @@ class ClassManage extends Component {
         },
         {
           label: "操作",
-          prop: "zip",
           render: (data) => {
             if (data.isActive) {
               return (
@@ -82,14 +64,41 @@ class ClassManage extends Component {
               )
             }
           }
+        },
+        {
+          label: "操作",
+          render: (data) => {
+            return (
+              <span>
+                <Button type="primary" size="small" onClick={() => this.toLookGrade(data)}>查看年级</Button>
+              </span>
+            )
+          }
         }
       ]
     }
   }
 
+  @observable
+  loading = false;
+
+  @observable
+  changeVisible = false;
+
+  //跳转到学院的年级管理
+  toLookGrade = (data) => {
+    this.props.history.push({
+      pathname: '/grade',
+      query: {
+        title: data.collegeName,
+        cid: data.id
+      },
+    })
+  }
+
   updateBtn = async (data) => {
     this.loading = true;
-    let result = await updateClass(data.id, !data.isActive);
+    let result = await updateCollege(data.id, !data.isActive);
     if (result.code === 1) {
       Message({
         message: data.isActive ? "禁用成功" : "激活成功",
@@ -100,51 +109,24 @@ class ClassManage extends Component {
       Message.error("发生错误");
     }
     this.loading = false;
-  };
+  }
 
   changeTag = () => {
     this.changeVisible = !this.changeVisible;
   };
 
-  showAddModal = () => {
-    this.addClassModal.show();
-  };
-
-  //一键全部禁止
-  delAll = () => {
-    MessageBox.confirm('此操作将禁用全部班级, 是否继续?', '提示', {
-      type: 'warning'
-    }).then(async () => {
-      this.loading = true;
-      await DelAllClass();
-      Message({
-        type: 'success',
-        message: '禁用成功!'
-      });
-      this.classListStore.list.map((v, i) => {
-        v.isActive = 0;
-      });
-      this.loading = false;
-
-    }).catch(() => {
-
-    });
-  };
-
-
 
   render() {
     return (
       <div>
-        <h1>{this.props.location.query.ctitle}-{this.props.location.query.gtitle}</h1>
         <Layout.Row>
           <Layout.Col span="24">
             <div className="btn-class-group">
               {
                 this.changeVisible ?
-                  <Button type="primary" icon="minus" onClick={this.changeTag}>只显示激活的班级</Button>
+                  <Button type="primary" icon="minus" onClick={this.changeTag}>只显示激活的学院</Button>
                   :
-                  <Button type="primary" icon="more" onClick={this.changeTag}>显示所有的班级</Button>
+                  <Button type="primary" icon="more" onClick={this.changeTag}>显示所有的学院</Button>
               }
               <Button type="primary" icon="plus" onClick={this.showAddModal}>添加</Button>
               <Button type="danger" icon="circle-close" onClick={this.delAll}>全部禁用</Button>
@@ -157,9 +139,9 @@ class ClassManage extends Component {
             columns={this.state.columns}
             data={
               this.changeVisible ?
-                this.classListStore.list.slice(0)
+                this.collegeListStore.list.slice(0)
                 :
-                this.classListStore.list.filter((v, i) => v.isActive === 1).slice(0)
+                this.collegeListStore.list.filter((v, i) => v.isActive === 1).slice(0)
             }
             border={true}
             height={window.screen.availHeight * 0.6}
@@ -169,12 +151,9 @@ class ClassManage extends Component {
             }}
           />
         </Loading>
-        <AddClassModal ref={ref => this.addClassModal = ref}
-                       gid={this.props.location.query.gid}
-                       classStore={this.classListStore}/>
       </div>
-    );
+    )
   }
 }
 
-export default withRouter(ClassManage)
+export default withRouter(CollegeManage);

@@ -61,7 +61,7 @@ export class SignItem {
 
   studentId;
 
-  phone;
+  needCheckData;
 
   createTime;
 
@@ -71,7 +71,7 @@ export class SignItem {
     this.name = obj.name;
     this.className = obj.className;
     this.studentId = obj.studentId;
-    this.phone = obj.phone;
+    this.needCheckData = JSON.parse(obj.needCheckData);
     this.createTime = obj.createTime;
 
     return this;

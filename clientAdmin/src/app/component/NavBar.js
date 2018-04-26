@@ -13,7 +13,7 @@ class NavBar extends Component {
         <Menu theme="dark" defaultActive={this.getDefaultActive()} className="el-menu-demo" mode="horizontal"
               onSelect={this.onSelect.bind(this)}>
           <Menu.SubMenu index="2" title="我的管理">
-            <Menu.Item index="2-1">管理班级</Menu.Item>
+            <Menu.Item index="2-1">管理学院</Menu.Item>
             <Menu.Item index="2-3">管理学生绑定信息</Menu.Item>
           </Menu.SubMenu>
           <Menu.SubMenu index="3" title="活动管理">
@@ -28,10 +28,7 @@ class NavBar extends Component {
   }
 
   getDefaultActive = () => {
-    console.log(this.props);
     switch (this.props.location.pathname) {
-      case "/class":
-        return "2-1";
       case "/student":
         return "2-3";
       case "/activity/type":
@@ -40,13 +37,12 @@ class NavBar extends Component {
         return "3-1";
       case "/activity/list":
         return "3-2";
+      case "/college":
+        return "2-1"
     }
   };
 
   onSelect(index) {
-    if (index === "2-1") {
-      this.props.history.push("/class");
-    }
     if (index === "2-3") {
       this.props.history.push("/student");
     }
@@ -58,6 +54,9 @@ class NavBar extends Component {
     }
     if (index === "3-5") {
       this.props.history.push("/activity/type")
+    }
+    if (index === "2-1") {
+      this.props.history.push("/college")
     }
   }
 }

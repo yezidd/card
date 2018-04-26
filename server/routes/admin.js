@@ -28,4 +28,22 @@ router.get("/student/list", controllers.admin.getStudentList);
 
 router.post("/student/del", controllers.admin.postDelBindStudent);
 
+//获取到所有 的年级
+router.get("/grade/list", controllers.admin.getGradeList);
+
+//禁用和解禁 年级
+router.post("/grade/update", controllers.admin.postUpdateGrade);
+
+//添加年级
+router.post("/grade/add", controllers.admin.postAddGrade);
+
+//获取到所有的学院
+router.get("/college/list", controllers.admin.getCollegeList);
+
+//学院的禁用和解禁
+router.post("/college/update", controllers.admin.postUpdateCollege);
+
+//获取到一个学院所有的年级和班级
+router.get("/class/select",controllers.admin.getClassSelect);
+
 module.exports = router;

@@ -5,8 +5,9 @@ import React, {Component} from 'react';
 import {Button, Dialog, Form, Select, Input, Loading, Message} from "element-react";
 import {addClass} from "../logic/ClassApiStore";
 import {ClassItem} from "../logic/ClassListStore";
+import {addGrade, GradeItem} from "../logic/GradeListStore";
 
-export default class AddClassModal extends Component {
+export default class AddGradeModal extends Component {
   constructor(props) {
     super(props);
 
@@ -27,17 +28,19 @@ export default class AddClassModal extends Component {
   };
 
   addClass = async () => {
+    console.log(this.props.cid);
+    let cid = this.props.cid;
     let flag = false;
-    this.props.classStore.list.map((v, i) => {
-      if (v.className === this.state.form.name) {
+    this.props.gradeStore.list.map((v, i) => {
+      if (v.gradeName === this.state.form.name) {
         flag = true;
       }
     });
     if (flag) {
-      Message("不能添加重复班级");
+      Message("不能添加重复年级");
     } else {
       this.setState({fullscreen: true});
-      let result = await addClass(Object.assign({},this.state.form,{gid:this.props.gid}));
+      let result = await addGrade(cid, this.state.form.name);
       this.setState({fullscreen: false});
       if (result.code === 1) {
         Message({
@@ -45,9 +48,9 @@ export default class AddClassModal extends Component {
           type: 'success'
         });
         //本地添加数据
-        this.props.classStore.add(new ClassItem().from({
-          id: result.data.data.id,
-          className: this.state.form.name,
+        this.props.gradeStore.add(new GradeItem().from({
+          id: result.data.id,
+          gradeName: this.state.form.name,
           isActive: 1
         }));
 
@@ -68,13 +71,13 @@ export default class AddClassModal extends Component {
     return (
       <div>
         <Dialog
-          title="添加班级"
+          title="添加年级"
           visible={this.state.dialogVisible3}
           onCancel={() => this.setState({dialogVisible3: false})}
         >
           <Dialog.Body>
             <Form model={this.state.form}>
-              <Form.Item label="班级名称" labelWidth="120">
+              <Form.Item label="年级名称" labelWidth="120">
                 <Input value={this.state.form.name} onChange={this.onChange.bind(this, 'name')}/>
               </Form.Item>
             </Form>

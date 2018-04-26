@@ -7,6 +7,7 @@ import URI from 'urijs';
 //添加班级
 export async function addClass(obj) {
   const uri = new URI("/class/add");
+  console.log("---数据--", obj);
   try {
     let result = await post(uri, {
       ...obj
