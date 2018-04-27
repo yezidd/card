@@ -62,8 +62,8 @@ async function postAddActivity(ctx) {
     isActive: 1,
     personNum,
     mess,
-    pointClass:JSON.stringify(pointClass),
-    pointCollege:pointCollege
+    pointClass: JSON.stringify(pointClass),
+    pointCollege: pointCollege
   });
   if (result) {
     ctx.state.code = 1;
@@ -287,6 +287,105 @@ async function getActivitySignList(ctx) {
 
 }
 
+//获取到签到列表
+//传递参数为id  为活动id  flag = 1|0表示签到的名单或者是未签到名单
+async function getActivityCheckList(ctx) {
+  let id = ctx.query.id;
+  let flag = (!!Number(ctx.query.flag)) ? 1 : 0;
+  let page = isNaN(Number(ctx.query.page)) ? 1 : Number(ctx.query.page);
+
+  console.log(flag, '=====', ctx.query.flag);
+
+  let checkLength = await mysql("cSign").count("cSign.id")
+    .join('cStudentInfo', function () {
+      this.on("cStudentInfo.open_id", '=', 'cSign.open_id')
+    })
+    .join('cClass', function () {
+      this.on("cStudentInfo.classId", '=', 'cClass.id')
+    })
+    .where("cSign.activityId", "=", id)
+    .where("cSign.signCheck", "=", flag);
+
+  let checkList = await mysql("cSign").select(
+    "cSign.id",
+    "cSign.activityId",
+    "cSign.signCheck",
+    "cSign.checkTime",
+    "cStudentInfo.name",
+    "cStudentInfo.studentId",
+    "cClass.className"
+  )
+    .join('cStudentInfo', function () {
+      this.on("cStudentInfo.open_id", '=', 'cSign.open_id')
+    })
+    .join('cClass', function () {
+      this.on("cStudentInfo.classId", '=', 'cClass.id')
+    })
+    .where("cSign.signCheck", "=", flag)
+    .where("cSign.activityId", "=", id)
+    .limit(PER_PAGE)
+    .offset((page - 1) * 10)
+    .orderBy('cSign.checkTime', 'desc');
+
+  ctx.state.code = 1;
+  ctx.state.data = {
+    count: checkLength[0]["count(`cSign`.`id`)"],
+    pageCount: Math.ceil(checkLength[0]["count(`cSign`.`id`)"] / PER_PAGE),
+    perPage: PER_PAGE,
+    currentPage: page,
+    data: checkList
+  }
+}
+
+//获取到反馈信息
+async function getActivityFeedBackList(ctx) {
+  let id = ctx.query.id;
+  let flag = (!!Number(ctx.query.flag)) ? 1 : 0;
+  let page = isNaN(Number(ctx.query.page)) ? 1 : Number(ctx.query.page);
+
+
+  let feedbackLength = await mysql("cSign").count("cSign.id")
+    .join('cStudentInfo', function () {
+      this.on("cStudentInfo.open_id", '=', 'cSign.open_id')
+    })
+    .join('cClass', function () {
+      this.on("cStudentInfo.classId", '=', 'cClass.id')
+    })
+    .where("cSign.activityId", "=", id)
+    .where("cSign.feedbackFlag", "=", flag);
+
+  let feedbackList = await mysql("cSign").select(
+    "cSign.id",
+    "cSign.activityId",
+    "cSign.feedbackFlag",
+    "cSign.feedTime",
+    "cSign.feedbackMess",
+    "cStudentInfo.name",
+    "cStudentInfo.studentId",
+    "cClass.className"
+  )
+    .join('cStudentInfo', function () {
+      this.on("cStudentInfo.open_id", '=', 'cSign.open_id')
+    })
+    .join('cClass', function () {
+      this.on("cStudentInfo.classId", '=', 'cClass.id')
+    })
+    .where("cSign.feedbackFlag", "=", flag)
+    .where("cSign.activityId", "=", id)
+    .limit(PER_PAGE)
+    .offset((page - 1) * 10)
+    .orderBy('cSign.checkTime', 'desc');
+
+  ctx.state.code = 1;
+  ctx.state.data = {
+    count: feedbackLength[0]["count(`cSign`.`id`)"],
+    pageCount: Math.ceil(feedbackLength[0]["count(`cSign`.`id`)"] / PER_PAGE),
+    perPage: PER_PAGE,
+    currentPage: page,
+    data: feedbackList
+  }
+}
+
 module.exports = {
   getActivityTypeList,
   updateActivityType,
@@ -295,5 +394,7 @@ module.exports = {
   getActivityList,
   postUpdateCheckStatus,
   postUpdateFinishStatus,
-  getActivitySignList
+  getActivitySignList,
+  getActivityCheckList,
+  getActivityFeedBackList
 };

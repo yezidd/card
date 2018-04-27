@@ -23,6 +23,9 @@ import ActivityList from "./page/activity/ActivityList";
 import ActivitySign from "./page/activity/ActivitySign";
 import GradeManage from "./page/GradeManage";
 import CollegeManage from "./page/CollegeManage";
+import ActivityCheck from "./page/activity/ActivityCheck";
+import {ActivityFeedBackStore} from "./logic/activity/ActivityFeedBackStore";
+import ActivityFeedBack from "./page/activity/ActivityFeedBack";
 
 export default class App extends Component {
   render() {
@@ -35,6 +38,8 @@ export default class App extends Component {
             <Route exact path="/activity/type" component={ActivityType}/>
             <Route exact path="/activity/list" component={ActivityList}/>
             <Route exact path="/activity/sign" component={ActivitySign}/>
+            <Route exact path="/activity/check" component={ActivityCheck}/>
+            <Route exact path="/activity/feedback" component={ActivityFeedBack}/>
             <Route exact path="/class" component={ClassManage}/>
             <Route exact path="/student" component={StudentManage}/>
             <Route exact path="/grade" component={GradeManage}/>

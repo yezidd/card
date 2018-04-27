@@ -19,7 +19,7 @@ class NavBar extends Component {
           <Menu.SubMenu index="3" title="活动管理">
             <Menu.Item index="3-1">活动发布管理</Menu.Item>
             <Menu.Item index="3-2">活动管理</Menu.Item>
-            <Menu.Item index="3-4">活动签到管理</Menu.Item>
+
             <Menu.Item index="3-5">活动类型管理</Menu.Item>
           </Menu.SubMenu>
         </Menu>

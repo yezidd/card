@@ -6,14 +6,16 @@ import {getQueryVariable} from "../../util/utilFunc";
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
 import {ActivitySignList, loadSignApi} from "../../logic/activity/ActivitySignList";
-import {Button, Loading, Pagination, Table,Layout} from "element-react";
+import {Button, Loading, Pagination, Table, Layout} from "element-react";
 import moment from "moment";
+import {withRouter} from 'react-router-dom';
 
-
+//活动报名页面
 @observer
-export default class ActivitySign extends Component {
+class ActivitySign extends Component {
 
   id;
+  title;
 
   activitySignList = new ActivitySignList();
 
@@ -24,42 +26,42 @@ export default class ActivitySign extends Component {
       columns: [
         {
           label: '学号',
-          prop:"studentId"
+          prop: "studentId"
         },
         {
           label: '班级',
-          prop:"className"
+          prop: "className"
         },
         {
-          label:'姓名',
-          prop:"name"
+          label: '姓名',
+          prop: "name"
         },
         {
-          label:"报名信息",
-          render:(data)=>{
-            console.log(data,"======这个数据")
+          label: "报名信息",
+          render: (data) => {
+            console.log(data, "======这个数据")
             return (
-                <div>
-                  {
-                    data.needCheckData.map((v,i)=>
-                      <p key={i}>{v.name}:{v.value}</p>
-                    )
-                  }
-                </div>
+              <div>
+                {
+                  data.needCheckData.map((v, i) =>
+                    <p key={i}>{v.name}:{v.value}</p>
+                  )
+                }
+              </div>
             )
           }
         },
         {
-          label:"报名时间",
-          render:(data)=>{
-            return(
-                <span>{moment(data.createTime).format("YYYY-MM-DD HH:mm")}</span>
+          label: "报名时间",
+          render: (data) => {
+            return (
+              <span>{moment(data.createTime).format("YYYY-MM-DD HH:mm")}</span>
             )
           }
         },
         {
-          label:"操作",
-          render:(data)=>{
+          label: "操作",
+          render: (data) => {
 
           }
         }
@@ -72,6 +74,7 @@ export default class ActivitySign extends Component {
 
   async componentWillMount() {
     this.id = getQueryVariable("id");
+    this.title = getQueryVariable("title")
     await this.activitySignList.getList(this.id);
   }
 
@@ -91,23 +94,30 @@ export default class ActivitySign extends Component {
   };
 
   @observable
-    loadingBtn = false;
+  loadingBtn = false;
 
   //导出报名者名单
-  loadSign =async ()=>{
+  loadSign = async () => {
     this.loadingBtn = true;
     await loadSignApi(this.id);
     this.loadingBtn = false;
+  }
+
+  //跳转到签到页面
+  toActivityCheck = () => {
+    this.props.history.push("/activity/check?id=" + this.id+"&title="+this.title);
   }
 
   render() {
 
     return (
       <div>
+        <h1>{decodeURIComponent(getQueryVariable("title"))}</h1>
         <Layout.Row>
           <Layout.Col span="24">
             <div className="btn-class-group">
-                <Button type={"primary"} onClick={()=>this.loadSign()} loading={this.loadingBtn}>导出报名名单</Button>
+              <Button type={"primary"} onClick={() => this.loadSign()} loading={this.loadingBtn}>导出报名名单</Button>
+              <Button type={"primary"} onClick={() => this.toActivityCheck()} loading={this.loadingBtn}>跳转到签到页面</Button>
             </div>
           </Layout.Col>
         </Layout.Row>
@@ -137,3 +147,5 @@ export default class ActivitySign extends Component {
     );
   }
 }
+
+export default withRouter(ActivitySign)

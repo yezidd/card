@@ -57,7 +57,7 @@ class ActivityList extends Component {
           render: (data) => {
             return (
               <span>
-                <Button type="primary" onClick={()=>this.toSignList(data)}>点击查看报名情况</Button>
+                <Button type="primary" onClick={() => this.toSignList(data)}>点击查看报名情况</Button>
                 </span>
             )
           }
@@ -154,9 +154,9 @@ class ActivityList extends Component {
 
 
   //跳转到报名页面
-  toSignList = (data)=>{
+  toSignList = (data) => {
     console.log(data.id)
-    this.props.history.push("/activity/sign?id="+data.id);
+    this.props.history.push("/activity/sign?id=" + data.id + "&title=" + data.title);
   }
 
   //更新是否签到的状态
@@ -197,8 +197,7 @@ class ActivityList extends Component {
 
   async componentWillMount() {
     this.loading = true;
-    await
-      this.activityListStore.getList();
+    await this.activityListStore.getList();
     this.loading = false;
   }
 
@@ -240,4 +239,4 @@ class ActivityList extends Component {
   }
 }
 
-export default  withRouter(ActivityList);
+export default withRouter(ActivityList);
