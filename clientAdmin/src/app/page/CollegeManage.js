@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
-import {Loading, Table, Button, Message,Layout} from "element-react";
+import {Loading, Table, Button, Message, Layout} from "element-react";
 import {CollegeListStore} from "../logic/CollegeListStore";
 import {withRouter} from 'react-router-dom';
 import {updateCollege} from "../logic/GradeListStore";
@@ -129,7 +129,7 @@ class CollegeManage extends Component {
                   <Button type="primary" icon="more" onClick={this.changeTag}>显示所有的学院</Button>
               }
               <Button type="primary" icon="plus" onClick={this.showAddModal}>添加</Button>
-              <Button type="danger" icon="circle-close" onClick={this.delAll}>全部禁用</Button>
+              {/*<Button type="danger" icon="circle-close" onClick={this.delAll}>全部禁用</Button>*/}
             </div>
           </Layout.Col>
         </Layout.Row>

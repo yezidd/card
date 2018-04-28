@@ -147,7 +147,7 @@ class ClassManage extends Component {
                   <Button type="primary" icon="more" onClick={this.changeTag}>显示所有的班级</Button>
               }
               <Button type="primary" icon="plus" onClick={this.showAddModal}>添加</Button>
-              <Button type="danger" icon="circle-close" onClick={this.delAll}>全部禁用</Button>
+              {/*<Button type="danger" icon="circle-close" onClick={this.delAll}>全部禁用</Button>*/}
             </div>
           </Layout.Col>
         </Layout.Row>

@@ -57,8 +57,8 @@ export class GradeItem {
 }
 
 //更新班级的状态
-export async function updateCollege(id, isActive) {
-  const uri = new URI("/college/update");
+export async function updateGrade(id, isActive) {
+  const uri = new URI("/grade/update");
   try {
     let result = await post(uri, {
       id,
