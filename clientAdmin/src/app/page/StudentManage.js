@@ -69,16 +69,16 @@ export default class StudentManage extends Component {
           label: "唯一ID",
           prop: "open_id"
         },
-        {
-          label: "操作",
-          render: (data) => {
-            return (
-              <span>
-                  <Button type="danger" size="small" onClick={() => this.DelBind(data)}>解绑</Button>
-                </span>
-            )
-          }
-        }
+        // {
+        //   label: "操作",
+        //   render: (data) => {
+        //     return (
+        //       <span>
+        //           <Button type="danger" size="small" onClick={() => this.DelBind(data)}>解绑</Button>
+        //         </span>
+        //     )
+        //   }
+        // }
       ]
     }
   }

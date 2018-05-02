@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2018-04-23 14:56:20
+-- Generation Time: 2018-05-02 18:31:16
 -- 服务器版本： 10.1.31-MariaDB
 -- PHP Version: 7.0.28
 
@@ -47,19 +47,20 @@ CREATE TABLE `cActivity` (
   `personNum` int(11) NOT NULL,
   `signNum` int(11) NOT NULL DEFAULT '0',
   `mess` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `isFinish` tinyint(1) NOT NULL DEFAULT '0' COMMENT '活动是否结束',
-  `forCid` int(11) NOT NULL COMMENT '0表示所有的班级',
-  `forGid` int(11) NOT NULL COMMENT '0表示所有年级'
+  `pointCollege` int(11) NOT NULL COMMENT '目标学院',
+  `pointClass` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '目标班级',
+  `isFinish` tinyint(1) NOT NULL DEFAULT '0' COMMENT '活动是否结束'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- 转存表中的数据 `cActivity`
 --
 
-INSERT INTO `cActivity` (`id`, `title`, `typeId`, `reward`, `rewardMark`, `location`, `locationId`, `isCheck`, `distance`, `startTime`, `endTime`, `createdTime`, `updatedTime`, `isNeedCheck`, `isActive`, `personNum`, `signNum`, `mess`, `isFinish`, `forCid`, `forGid`) VALUES
-(20, '杭州市三医院', 2, 3, '创新分', '杭州市三医院', '{\"lon\":\"120.13025\",\"lat\":\"30.2596\"}', 0, 6, '2018-04-21 18:58:48', '2018-04-29', '2018-04-21 10:58:48', '2018-04-22 08:28:38', '{}', 1, 10, 1, '你好中国', 1, 0, 0),
-(21, '科普讲座', 2, 0, '创新分', '32423', '{\"lon\":\"120.13025\",\"lat\":\"30.2596\"}', 1, 23, '2018-04-21T11:57:57.899Z', '2018-04-25T16:00:00.000Z', '2018-04-21 11:59:23', '2018-04-22 03:19:55', '{}', 1, 0, 1, '', 0, 0, 0),
-(22, '杭州市三医院讲座', 2, 0, '工时', '杭州市三医院', '{\"lon\":\"120.184431\",\"lat\":\"30.252075\"}', 0, 2, '2018-04-26T02:00:00.000Z', '2018-04-24T16:00:00.000Z', '2018-04-23 06:46:00', '2018-04-23 06:46:00', '{\"checkPhone\":true}', 1, 0, 0, '21423543543', 0, 0, 0);
+INSERT INTO `cActivity` (`id`, `title`, `typeId`, `reward`, `rewardMark`, `location`, `locationId`, `isCheck`, `distance`, `startTime`, `endTime`, `createdTime`, `updatedTime`, `isNeedCheck`, `isActive`, `personNum`, `signNum`, `mess`, `pointCollege`, `pointClass`, `isFinish`) VALUES
+(23, '杭州市三医院', 1, 14, '创新分', '你好啊', '{\"lon\":\"120.184431\",\"lat\":\"30.252075\"}', 0, 2, '2018-04-24T07:41:30.708Z', '2018-04-23T16:00:00.000Z', '2018-04-24 07:41:56', '2018-04-24 10:03:59', '[{\"key\":1,\"name\":\"手机号\",\"value\":\"\"}]', 1, 23, 0, '213123', 0, '', 0),
+(24, '1', 1, 13, '工时', '23', '{\"lon\":\"120.184431\",\"lat\":\"30.252075\"}', 0, 2, '2018-04-17T16:00:00.000Z', '2018-04-25T16:00:00.000Z', '2018-04-24 07:44:37', '2018-04-24 16:30:58', '[{\"key\":1,\"name\":\"手机号\",\"value\":\"\"},{\"key\":2,\"name\":\"身份证\",\"value\":\"\"}]', 1, 10, 1, '213123213', 0, '', 0),
+(25, '杭州市三医院', 1, 0, '创新分', '文三路', '{\"lon\":\"120\",\"lat\":\"231\"}', 0, 22, '2018-04-26T16:00:00.000Z', '2018-04-24T16:00:00.000Z', '2018-04-26 06:39:09', '2018-04-26 11:37:34', '[{\"key\":1,\"name\":\"手机号\",\"value\":\"\"},{\"key\":1,\"name\":\"身份证号\",\"value\":\"\"}]', 1, 20, 0, '你好中国', 0, '', 0),
+(26, '杭州十三医院2', 1, 2, '创新分', 'long', '{\"lon\":\"120.184431\",\"lat\":\"30.252075\"}', 0, 2222, '2018-04-26T06:44:30.422Z', '2018-04-27T16:00:00.000Z', '2018-04-26 06:44:56', '2018-05-01 08:46:43', '[{\"key\":1,\"name\":\"手机号\",\"value\":\"\"},{\"key\":1,\"name\":\"111\",\"value\":\"\"}]', 1, 23, 1, '233', 1, '[31,32,33]', 1);
 
 -- --------------------------------------------------------
 
@@ -76,6 +77,13 @@ CREATE TABLE `cCardRecord` (
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `workId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- 转存表中的数据 `cCardRecord`
+--
+
+INSERT INTO `cCardRecord` (`id`, `uuid`, `open_id`, `distance`, `checkFlag`, `time`, `workId`) VALUES
+(1, 'd3911181-2db8-4f09-9cf2-b3501409fee9', 'oHzQa0WbW-5PvasllOi68SPIUceI', 8949.45, 1, '2018-05-01 05:59:18', 11);
 
 -- --------------------------------------------------------
 
@@ -95,9 +103,35 @@ CREATE TABLE `cClass` (
 --
 
 INSERT INTO `cClass` (`id`, `className`, `isActive`, `gid`) VALUES
-(31, '1', 0, 0),
-(32, '2', 0, 0),
-(33, '3', 0, 0);
+(31, '软工1405', 1, 1),
+(32, '软工1404', 1, 1),
+(33, '软工1403', 1, 1),
+(34, '软工1402', 1, 0),
+(35, '软工1401', 1, 0),
+(36, '政管1401', 1, 9),
+(37, '政管1402', 1, 9),
+(38, '政管1403', 1, 9),
+(39, '博士研究所', 1, 8);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `cCollege`
+--
+
+CREATE TABLE `cCollege` (
+  `id` int(11) NOT NULL,
+  `collegeName` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `isActive` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- 转存表中的数据 `cCollege`
+--
+
+INSERT INTO `cCollege` (`id`, `collegeName`, `isActive`) VALUES
+(1, '计算机学院', 1),
+(2, '政管学院', 1);
 
 -- --------------------------------------------------------
 
@@ -108,8 +142,24 @@ INSERT INTO `cClass` (`id`, `className`, `isActive`, `gid`) VALUES
 CREATE TABLE `cGrade` (
   `id` int(11) NOT NULL,
   `gradeName` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `isActive` int(11) NOT NULL
+  `isActive` tinyint(1) NOT NULL DEFAULT '1',
+  `cid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- 转存表中的数据 `cGrade`
+--
+
+INSERT INTO `cGrade` (`id`, `gradeName`, `isActive`, `cid`) VALUES
+(1, '大一', 1, 1),
+(2, '大二', 1, 1),
+(3, '大三', 1, 1),
+(4, '大四', 1, 1),
+(5, '研一', 1, 1),
+(6, '研二', 1, 1),
+(7, '研三', 1, 1),
+(8, '博一', 1, 1),
+(9, '大一', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -132,7 +182,7 @@ CREATE TABLE `cSessionInfo` (
 --
 
 INSERT INTO `cSessionInfo` (`open_id`, `uuid`, `skey`, `create_time`, `last_visit_time`, `session_key`, `user_info`) VALUES
-('oHzQa0WbW-5PvasllOi68SPIUceI', '88527393-9bf9-4fbd-990d-2f4faf7c9b98', 'b74c1c26a609f56a0855279ae00811d18ee10241', '2018-04-23 12:35:29', '2018-04-23 12:35:29', 'umADONWqBDvUSGF4azsdrQ==', '{\"openId\":\"oHzQa0WbW-5PvasllOi68SPIUceI\",\"nickName\":\"幽海\",\"gender\":1,\"language\":\"zh_CN\",\"city\":\"Taizhou\",\"province\":\"Zhejiang\",\"country\":\"China\",\"avatarUrl\":\"https://wx.qlogo.cn/mmopen/vi_32/Apo1wlAHB27J7OVVYpEicweWHKicr6PPQic95gzRdib6rcbic6qBbviadl7mia8vFZYq4Pdxe42fIDZAUZ4BUnkIwQiajA/0\",\"watermark\":{\"timestamp\":1524486926,\"appid\":\"wx438087004b83c83d\"}}');
+('oHzQa0WbW-5PvasllOi68SPIUceI', 'bae534b6-715a-4497-95b3-d65740cb6cc3', 'f6bf4a97df6167f3a9da7477521eda82953cbe7e', '2018-05-02 08:05:34', '2018-05-02 08:05:34', '0YXBZScF0SuXgzjpktY4zQ==', '{\"openId\":\"oHzQa0WbW-5PvasllOi68SPIUceI\",\"nickName\":\"幽海\",\"gender\":1,\"language\":\"zh_CN\",\"city\":\"Taizhou\",\"province\":\"Zhejiang\",\"country\":\"China\",\"avatarUrl\":\"https://wx.qlogo.cn/mmopen/vi_32/Apo1wlAHB27J7OVVYpEicweWHKicr6PPQic95gzRdib6rcbic6qBbviadl7mia8vFZYq4Pdxe42fIDZAUZ4BUnkIwQiajA/0\",\"watermark\":{\"timestamp\":1525248331,\"appid\":\"wx438087004b83c83d\"}}');
 
 -- --------------------------------------------------------
 
@@ -146,22 +196,23 @@ CREATE TABLE `cSign` (
   `open_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `activityId` int(11) NOT NULL,
   `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `studentId` int(11) NOT NULL,
+  `studentId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `phone` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '手机号可以不填，根据需求来',
   `signCheck` tinyint(1) NOT NULL DEFAULT '0',
   `feedbackMess` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `feedbackFlag` tinyint(1) NOT NULL DEFAULT '0',
   `checkTime` datetime NOT NULL,
-  `feedTime` datetime NOT NULL
+  `feedTime` datetime NOT NULL,
+  `needCheckData` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- 转存表中的数据 `cSign`
 --
 
-INSERT INTO `cSign` (`id`, `uuid`, `open_id`, `activityId`, `createTime`, `studentId`, `phone`, `signCheck`, `feedbackMess`, `feedbackFlag`, `checkTime`, `feedTime`) VALUES
-(21, 'fb63cef9-d664-497e-8664-d2097f4eef15', 'oHzQa0WbW-5PvasllOi68SPIUceI', 20, '2018-04-21 19:54:44', 2147483647, '17816890887', 1, '314242342354353', 1, '2018-04-21 20:15:40', '2018-04-22 14:04:47'),
-(22, 'fb63cef9-d664-497e-8664-d2097f4eef15', 'oHzQa0WbW-5PvasllOi68SPIUceI', 21, '2018-04-21 20:01:07', 2147483647, '0', 1, '', 0, '2018-04-22 11:20:00', '0000-00-00 00:00:00');
+INSERT INTO `cSign` (`id`, `uuid`, `open_id`, `activityId`, `createTime`, `studentId`, `phone`, `signCheck`, `feedbackMess`, `feedbackFlag`, `checkTime`, `feedTime`, `needCheckData`) VALUES
+(30, '1aea1b50-4f17-42bd-b146-83ee1618d976', 'oHzQa0WbW-5PvasllOi68SPIUceI', 24, '2018-04-25 00:30:58', '201426811223', '[{\"key\":1,\"name\":\"手机号\",\"value\":\"17816890887\"},{\"key\":2,\"name\":\"身份证\",\"value\":\"331022199701280014\"}]', 0, '', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '[{\"key\":1,\"name\":\"手机号\",\"value\":\"17816890888\"},{\"key\":2,\"name\":\"身份证\",\"value\":\"331022199701280014\"}]'),
+(31, '1aea1b50-4f17-42bd-b146-83ee1618d976', 'oHzQa0WbW-5PvasllOi68SPIUceI', 26, '2018-04-26 19:17:11', '201426811223', '[{\"key\":1,\"name\":\"手机号\",\"value\":\"17816890887\"},{\"key\":1,\"name\":\"111\",\"value\":\"112233\"}]', 1, '真的好棒啊活动', 1, '2018-04-26 19:37:17', '2018-04-26 19:52:37', '[{\"key\":1,\"name\":\"手机号\",\"value\":\"17816890887\"},{\"key\":1,\"name\":\"111\",\"value\":\"112233\"}]');
 
 -- --------------------------------------------------------
 
@@ -177,6 +228,13 @@ CREATE TABLE `cStudentInfo` (
   `classId` int(11) NOT NULL,
   `studentId` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- 转存表中的数据 `cStudentInfo`
+--
+
+INSERT INTO `cStudentInfo` (`id`, `uuid`, `open_id`, `name`, `classId`, `studentId`) VALUES
+(24, 'd3911181-2db8-4f09-9cf2-b3501409fee9', 'oHzQa0WbW-5PvasllOi68SPIUceI', '叶家盛', 31, '201426811223');
 
 -- --------------------------------------------------------
 
@@ -225,7 +283,7 @@ INSERT INTO `cWork` (`id`, `startTime`, `timeLong`, `title`, `mess`, `distance`,
 (8, '17:32:00', 7200000, '6', '6', 12000, 0),
 (9, '16:33:00', 7200000, '234', '234', 2000, 0),
 (10, '16:35:00', 3600000, '23', '231', 23000, 0),
-(11, '14:10:00', 7200000, '夜归打卡', '。。。', 2000, 1);
+(11, '13:10:00', 7200000, '夜归打卡', '。。。', 20000, 1);
 
 --
 -- Indexes for dumped tables
@@ -247,6 +305,12 @@ ALTER TABLE `cCardRecord`
 -- Indexes for table `cClass`
 --
 ALTER TABLE `cClass`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `cCollege`
+--
+ALTER TABLE `cCollege`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -295,37 +359,43 @@ ALTER TABLE `cWork`
 -- 使用表AUTO_INCREMENT `cActivity`
 --
 ALTER TABLE `cActivity`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- 使用表AUTO_INCREMENT `cCardRecord`
 --
 ALTER TABLE `cCardRecord`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- 使用表AUTO_INCREMENT `cClass`
 --
 ALTER TABLE `cClass`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- 使用表AUTO_INCREMENT `cCollege`
+--
+ALTER TABLE `cCollege`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- 使用表AUTO_INCREMENT `cGrade`
 --
 ALTER TABLE `cGrade`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- 使用表AUTO_INCREMENT `cSign`
 --
 ALTER TABLE `cSign`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- 使用表AUTO_INCREMENT `cStudentInfo`
 --
 ALTER TABLE `cStudentInfo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- 使用表AUTO_INCREMENT `cType`
