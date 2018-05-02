@@ -22,6 +22,11 @@ class NavBar extends Component {
 
             <Menu.Item index="3-5">活动类型管理</Menu.Item>
           </Menu.SubMenu>
+          <Menu.SubMenu index="4" title="打卡管理">
+            <Menu.Item index="4-1">打卡数据查看</Menu.Item>
+            <Menu.Item index="4-2">未打卡数据查看</Menu.Item>
+            <Menu.Item index="4-3">打卡发布</Menu.Item>
+          </Menu.SubMenu>
         </Menu>
       </div>
     );
@@ -38,7 +43,13 @@ class NavBar extends Component {
       case "/activity/list":
         return "3-2";
       case "/college":
-        return "2-1"
+        return "2-1";
+      case "/card/home":
+        return "4-1";
+      case "/card/homeNot":
+        return "4-2";
+      case "/card/set":
+        return "4-3";
     }
   };
 
@@ -57,6 +68,15 @@ class NavBar extends Component {
     }
     if (index === "2-1") {
       this.props.history.push("/college")
+    }
+    if (index === "4-1") {
+      this.props.history.push("/card/home")
+    }
+    if (index === "4-2") {
+      this.props.history.push("/card/homeNot")
+    }
+    if (index === "4-3") {
+      this.props.history.push("/card/set")
     }
   }
 }

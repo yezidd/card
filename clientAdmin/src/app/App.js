@@ -26,6 +26,7 @@ import CollegeManage from "./page/CollegeManage";
 import ActivityCheck from "./page/activity/ActivityCheck";
 import {ActivityFeedBackStore} from "./logic/activity/ActivityFeedBackStore";
 import ActivityFeedBack from "./page/activity/ActivityFeedBack";
+import ActivityModify from "./page/activity/ActivityModify";
 
 export default class App extends Component {
   render() {
@@ -40,6 +41,10 @@ export default class App extends Component {
             <Route exact path="/activity/sign" component={ActivitySign}/>
             <Route exact path="/activity/check" component={ActivityCheck}/>
             <Route exact path="/activity/feedback" component={ActivityFeedBack}/>
+            <Route exact path="/activity/modify" component={ActivityModify}/>
+            <Route exact path="/card/home" component={Home}/>
+            <Route exact path="/card/set" component={WorkManage}/>
+            <Route exact path="/card/homeNot" component={HomeNot}/>
             <Route exact path="/class" component={ClassManage}/>
             <Route exact path="/student" component={StudentManage}/>
             <Route exact path="/grade" component={GradeManage}/>

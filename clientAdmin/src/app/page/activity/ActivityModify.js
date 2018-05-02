@@ -1,34 +1,66 @@
 /**
- * Created by yzdd on 2018/4/18.
+ * Created by yzdd on 2018/4/28.
  */
 import React, {Component} from 'react';
+import {withRouter} from "react-router-dom";
+import {getQueryVariable} from "../../util/utilFunc";
+import {observable} from 'mobx';
+import {observer} from 'mobx-react';
+import {getActivityInfoById, postActivityModify} from "../../logic/activity/ActivityModifyStore";
 import {
   Button, Checkbox, DatePicker, Form, Input, Select, Switch, Layout, Radio, Message,
   Loading
 } from "element-react";
 import './activity.css'
 import {addActivity} from "../../logic/activity/ActivityLoadStore";
-import {observer} from 'mobx-react';
-import {TypeListStore} from "../../logic/activity/TypeListStore";
-import {observable} from 'mobx';
-import SelectClassModal from "../../component/SelectClassModal";
 import {CollegeListStore} from "../../logic/CollegeListStore";
+import {TypeListStore} from "../../logic/activity/TypeListStore";
+import SelectClassModal from "../../component/SelectClassModal";
+import moment from "moment";
 
-//发布活动任务
 @observer
-export default class ActivityLoad extends Component {
+class ActivityModify extends Component {
 
   typeListStore = new TypeListStore();
 
   collegeListStore = new CollegeListStore();
-
 
   @observable
   loadingData = false;
   @observable
   loadingSub = false;
 
+  //获取到活动的详情，然后实现修改功能
   async componentWillMount() {
+    let id = getQueryVariable("id");
+    this.setState({
+      fullscreen: true
+    });
+    let result = await getActivityInfoById(id);
+    console.log(result.data, "======");
+    this.setState({
+      form: {
+        title: result.data.title,
+        distance: Number(result.data.distance),
+        check: result.data.isCheck,
+        isNeedCheck: JSON.parse(result.data.isNeedCheck),
+        location: result.data.location,
+        lon: JSON.parse(result.data.locationId).lon,
+        lat: JSON.parse(result.data.locationId).lat,
+        mess: result.data.mess,
+        personNum: Number(result.data.personNum),
+        pointClass: JSON.parse(result.data.pointClass),
+        pointCollege: result.data.pointCollege,
+        reward: Number(result.data.reward),
+        rewardMark: result.data.rewardMark,
+        startDateTime: new Date(result.data.startTime),
+        endDate: new Date(result.data.endTime),
+        type: Number(result.data.typeId),
+      }
+    });
+    this.setState({
+      fullscreen: false
+    });
     this.loadingData = true;
     //获取活动类型
     await this.typeListStore.getList();
@@ -41,8 +73,8 @@ export default class ActivityLoad extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
+      fullscreen: false,
       form: {
         title: '',
         startDateTime: null,
@@ -72,11 +104,8 @@ export default class ActivityLoad extends Component {
         location: [{required: true, message: '请输入地点', trigger: 'blur'}],
         lon: [{required: true, message: '请输入经度', trigger: 'blur'}],
         lat: [{required: true, message: '请输入纬度', trigger: 'blur'}],
-        distance: [{required: true, message: '请输入规定距离', trigger: 'blur'}],
         type: [{required: true, message: '请输入类型', trigger: 'blur'}],
-        reward: [{required: true, message: '请输入奖励', trigger: 'blur'}],
         rewardMark: [{required: true, message: '请输入奖励类型', trigger: 'blur'}],
-        personNum: [{required: true, message: '请输入规定人数', trigger: 'blur'}],
       }
     };
   }
@@ -85,49 +114,26 @@ export default class ActivityLoad extends Component {
     e.preventDefault();
 
     this.refs.form.validate(async (valid) => {
+      let id = getQueryVariable("id");
       if (valid) {
         console.log("--提交的数据--", this.state.form);
         this.loadingSub = true;
-        let result = await addActivity(this.state.form);
-        console.log(result, "---")
+
+        let result = await postActivityModify(id, this.state.form);
+
+        console.log(result, "===修改的结果");
         if (result.code === 1) {
           Message({
-            message: '发布成功',
+            message: '修改成功',
             type: 'success'
           });
-          this.setState({
-            form: {
-              title: '',
-              startDateTime: null,
-              endDate: null,
-              location: "",
-              lon: "",
-              lat: "",
-              check: false,
-              req: [],
-              mess: '',
-              distance: '',
-              type: '',
-              reward: '',
-              rewardMark: '',
-              isNeedCheck: [
-                {key: 1, name: "手机号", value: ""}
-              ],
-              pointCollege: "",
-              pointClass: []
-            },
-
-          });
+          this.props.history.push("/activity/list");
         }
-        if (result.code === 0) {
-          Message.error(result.data.error);
-        }
-        if (result.code === -1) {
-          Message.error("发生错误，请联系管理员");
+        if (result.code = 0) {
+          Message.error("发生错误");
         }
         this.loadingSub = false;
       } else {
-
         return false;
       }
     });
@@ -184,7 +190,6 @@ export default class ActivityLoad extends Component {
   }
 
 
-
   //跳转到选择班级界面
   toSelectClass = () => {
     if (this.state.form['pointCollege'] === "") {
@@ -196,7 +201,7 @@ export default class ActivityLoad extends Component {
 
   //设置一个回调函数用于给当前页面的pointClass
   setPointClassData = (data) => {
-    this.state.form['pointClass']=data;
+    this.state.form['pointClass'] = data;
     this.forceUpdate();
   };
 
@@ -394,3 +399,5 @@ export default class ActivityLoad extends Component {
     )
   }
 }
+
+export default withRouter(ActivityModify)

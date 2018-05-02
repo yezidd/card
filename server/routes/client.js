@@ -48,4 +48,19 @@ router.post("/activity/feedback", validationMiddleware, controllers.client.postF
 
 //绑定函数
 router.post('/person/bind', validationMiddleware, controllers.client.postBindPerson);
+
+//下面是夜归打卡的接口
+//-----------------------------
+//获取到任务列表
+//任务永远是1的那条数据
+router.get("/card/work", controllers.work.getWorkTask);
+
+//查询当前用户今天的打卡状态
+router.post('/checkCardSet', validationMiddleware, controllers.student.getCardStatus);
+
+//打卡
+router.post("/cardSet", validationMiddleware, controllers.student.cardSet);
+//获取当前距离标准点的距离
+router.get("/distance", controllers.work.getDistance);
+//-----------------------
 module.exports = router;

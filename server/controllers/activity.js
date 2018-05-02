@@ -386,6 +386,96 @@ async function getActivityFeedBackList(ctx) {
   }
 }
 
+//获取到单个活动的详情
+async function getActivityInfo(ctx) {
+  //传递的参数是活动的id
+  let id = ctx.query.id;
+
+  let activityResult = await mysql("cActivity").select("*")
+    .where('id', "=", id);
+  if (activityResult.length === 0) {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      message: "发生错误"
+    }
+  } else {
+    ctx.state.code = 1;
+    ctx.state.data = activityResult[0];
+  }
+}
+
+async function postActivityModify(ctx) {
+  //活动id
+  let id = ctx.request.body.id;
+  //标题
+  let title = ctx.request.body.title;
+  //类型ID
+  let typeId = ctx.request.body.type;
+  //活动开始时间
+  let startTime = ctx.request.body.startDateTime;
+  //活动报名截止时间
+  let endTime = ctx.request.body.endDate;
+  //奖励的数量
+  let reward = ctx.request.body.reward;
+  //奖励的类型
+  let rewardMark = ctx.request.body.rewardMark;
+  //报名需求
+  let isNeedCheck = ctx.request.body.isNeedCheck;
+
+  //目标学院id
+  let pointCollege = ctx.request.body.pointCollege;
+
+  //目标班级id
+  let pointClass = ctx.request.body.pointClass;
+
+  //活动地点
+  let location = ctx.request.body.location;
+  //活动经纬度
+  let locationId = {
+    lon: ctx.request.body.lon,
+    lat: ctx.request.body.lat
+  }
+  //活动规定签到距离
+  let distance = ctx.request.body.distance;
+  //活动的备注
+  let mess = ctx.request.body.mess;
+
+  //额定人数
+  let personNum = ctx.request.body.personNum;
+
+  //是否开启签到
+  let isCheck = ctx.request.body.check;
+  let result = await mysql("cActivity").update({
+    title,
+    typeId,
+    startTime,
+    endTime,
+    reward,
+    rewardMark,
+    location,
+    locationId: JSON.stringify(locationId),
+    isCheck,
+    distance,
+    isNeedCheck: JSON.stringify(isNeedCheck),
+    isActive: 1,
+    personNum,
+    mess,
+    pointClass: JSON.stringify(pointClass),
+    pointCollege: pointCollege
+  }).where("id", "=", id);
+  if (result) {
+    ctx.state.code = 1;
+    ctx.state.data = {
+      message: "ok"
+    }
+  } else {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      error: "发生错误"
+    }
+  }
+}
+
 module.exports = {
   getActivityTypeList,
   updateActivityType,
@@ -396,5 +486,7 @@ module.exports = {
   postUpdateFinishStatus,
   getActivitySignList,
   getActivityCheckList,
-  getActivityFeedBackList
+  getActivityFeedBackList,
+  getActivityInfo,
+  postActivityModify
 };

@@ -84,10 +84,6 @@ export default class Home extends Component {
           prop: "distance"
         },
         {
-          label: "唯一ID",
-          prop: "open_id"
-        },
-        {
           label: "当时任务开始时间",
           prop: "startTime"
         },

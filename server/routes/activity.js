@@ -35,4 +35,9 @@ router.get("/activity/check", controllers.activity.getActivityCheckList);
 //获取到反馈信息
 router.get("/activity/feedback", controllers.activity.getActivityFeedBackList);
 
+//获取到单个活动的详细信息
+router.get("/activity/info",controllers.activity.getActivityInfo);
+
+//活动的修改
+router.post("/activity/modify",controllers.activity.postActivityModify);
 module.exports = router;

@@ -31,7 +31,12 @@ class ActivityList extends Component {
           prop: "title",
           width: 160,
           fixed: 'left',
-          align: 'center'
+          align: 'center',
+          render: (data) => {
+            return (
+              <span onClick={() => this.toModifyActivity(data)} className="point">{data.title}</span>
+            )
+          }
         },
         {
           label: "操作",
@@ -147,6 +152,11 @@ class ActivityList extends Component {
         }
       ]
     }
+  }
+
+  toModifyActivity = (data) => {
+    console.log(data.title);
+    this.props.history.push("/activity/modify?id=" + data.id);
   }
 
   @observable

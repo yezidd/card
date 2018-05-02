@@ -94,7 +94,7 @@ class CollegeManage extends Component {
         cid: data.id
       },
     })
-  }
+  };
 
   updateBtn = async (data) => {
     this.loading = true;

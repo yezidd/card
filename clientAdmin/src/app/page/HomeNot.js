@@ -72,10 +72,6 @@ export default class HomeNot extends Component {
           label: "学号",
           prop: "studentId"
         },
-        {
-          label: "唯一ID",
-          prop: "open_id"
-        }
       ]
     }
   }
