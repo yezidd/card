@@ -25,7 +25,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: "bundle.js",
+    filename: "bundle.[chunkhash].js",
     chunkFilename: 'chunk.[name].js',
   },
   module: {
@@ -73,11 +73,11 @@ module.exports = {
   },
   plugins: [
     //分离出style css文件
-    new ExtractTextPlugin('[name].css'),
+    new ExtractTextPlugin('[name].[contenthash].css'),
     //分离出公共的chunk文件
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor', 'manifest'],
-      filename: "[name].js"
+      filename: "[name].[chunkhash].js"
     }),
     //然后是通过声明变量,使得引用的文件打包提及最小
     //声明webpack打包时的全局变量
