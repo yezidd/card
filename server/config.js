@@ -6,10 +6,10 @@ const CONF = {
   appId: 'wx438087004b83c83d',
 
   // 微信小程序 App Secret
-  appSecret: '3d5d13e46f8461b76fdbc8bb1d007e4a',
+  appSecret: 'a0b3996f0720a0e22cbd31acb6e18e5c',
 
   // 是否使用腾讯云代理登录小程序
-  useQcloudLogin: true,
+  useQcloudLogin: false,
 
   /**
    * MySQL 配置，用来存储 session 和用户信息
