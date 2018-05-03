@@ -28,6 +28,10 @@ export class CollegeListStore {
       throw err;
     }
   }
+  add(obj) {
+    this.list.push(obj);
+    console.log(this.list);
+  }
 }
 
 export class CollegeItem {
@@ -43,5 +47,18 @@ export class CollegeItem {
     this.id = obj.id;
     this.isActive = obj.isActive;
     return this;
+  }
+}
+//添加学院
+export async function addCollege(collegeName) {
+  const uri = new URI("/college/add");
+  try {
+    let result = await post(uri, {
+      collegeName: collegeName
+    });
+    console.log(result, "====添加的结果");
+    return result;
+  } catch (err) {
+    throw err;
   }
 }

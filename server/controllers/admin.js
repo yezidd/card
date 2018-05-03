@@ -561,6 +561,38 @@ function clear(data) {
   return JSON.parse(JSON.stringify(data));
 }
 
+//添加学院
+async function postAddCollege(ctx){
+  //学院名字
+  let collegeName = ctx.request.body.collegeName;
+
+  //先查询是否出现重名
+  let addRepeatResult = await mysql("cCollege").select("*").where("collegeName", "=", collegeName);
+
+  if (addRepeatResult.length === 0) {
+    //没有重复的话就添加这个东西
+    let addResult = await mysql("cCollege").insert({
+      collegeName,
+    });
+    if (addResult) {
+      ctx.state.code = 1;
+      ctx.state.data = {
+        id: addResult[0]
+      }
+    } else {
+      ctx.state.code = 0;
+      ctx.state.data = {
+        message: "发生错误"
+      }
+    }
+  } else {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      message: "年级名重复"
+    }
+  }
+}
+
 module.exports = {
   getCardList,
   getNotCardList,
@@ -577,5 +609,6 @@ module.exports = {
   postAddGrade,
   getCollegeList,
   postUpdateCollege,
-  getClassSelect
+  getClassSelect,
+  postAddCollege
 };

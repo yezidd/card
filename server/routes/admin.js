@@ -37,6 +37,9 @@ router.post("/grade/update", controllers.admin.postUpdateGrade);
 //添加年级
 router.post("/grade/add", controllers.admin.postAddGrade);
 
+//添加学院
+router.post("/college/add", controllers.admin.postAddCollege);
+
 //获取到所有的学院
 router.get("/college/list", controllers.admin.getCollegeList);
 

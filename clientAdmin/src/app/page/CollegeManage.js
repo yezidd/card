@@ -5,7 +5,7 @@ import {Loading, Table, Button, Message, Layout} from "element-react";
 import {CollegeListStore} from "../logic/CollegeListStore";
 import {withRouter} from 'react-router-dom';
 import {updateCollege} from "../logic/GradeListStore";
-import AddClassModal from "../component/AddClassModal";
+import AddCollegeModal from "../component/AddCollegeModal";
 
 //学院管理
 @observer
