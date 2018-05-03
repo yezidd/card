@@ -8,6 +8,8 @@ const webpack = require("webpack");
 const UglifyjsWebpackPlugin = require("uglifyjs-webpack-plugin");
 const autoprefixer = require("autoprefixer");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const buildPath = './';
+
 
 module.exports = {
   entry: {
@@ -27,6 +29,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: "bundle.[chunkhash].js",
     chunkFilename: 'chunk.[name].js',
+    publicPath:buildPath
   },
   module: {
     rules: [

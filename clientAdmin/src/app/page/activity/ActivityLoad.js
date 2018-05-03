@@ -184,7 +184,6 @@ export default class ActivityLoad extends Component {
   }
 
 
-
   //跳转到选择班级界面
   toSelectClass = () => {
     if (this.state.form['pointCollege'] === "") {
@@ -194,9 +193,18 @@ export default class ActivityLoad extends Component {
     }
   }
 
+  deleteNeed = (index)=>{
+    if (index !== -1) {
+      this.state.form.isNeedCheck.splice(index, 1);
+      this.forceUpdate();
+    }
+
+    e.preventDefault();
+  }
+
   //设置一个回调函数用于给当前页面的pointClass
   setPointClassData = (data) => {
-    this.state.form['pointClass']=data;
+    this.state.form['pointClass'] = data;
     this.forceUpdate();
   };
 
@@ -331,7 +339,7 @@ export default class ActivityLoad extends Component {
                   </Layout.Col>
                   <Layout.Col className="line" span="2">-</Layout.Col>
                   <Layout.Col span="11">
-                    <Button>删除</Button>
+                    <Button onClick={() => this.deleteNeed(index)}>删除</Button>
                   </Layout.Col>
                 </Form.Item>
               )

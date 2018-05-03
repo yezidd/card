@@ -5,6 +5,7 @@ import {Loading, Table, Button, Message, Layout} from "element-react";
 import {CollegeListStore} from "../logic/CollegeListStore";
 import {withRouter} from 'react-router-dom';
 import {updateCollege} from "../logic/GradeListStore";
+import AddClassModal from "../component/AddClassModal";
 
 //学院管理
 @observer
@@ -115,6 +116,9 @@ class CollegeManage extends Component {
     this.changeVisible = !this.changeVisible;
   };
 
+  showAddModal = () => {
+    this.addCollegeModal.show();
+  }
 
   render() {
     return (
@@ -151,6 +155,8 @@ class CollegeManage extends Component {
             }}
           />
         </Loading>
+        <AddCollegeModal ref={ref => this.addCollegeModal = ref}
+                         collegeStore={this.collegeListStore}/>
       </div>
     )
   }
