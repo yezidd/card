@@ -30,7 +30,7 @@ module.exports = {
   },
   module: {
     rules: [
-      {test: /\.js$/, use: "babel-loader",exclude: /node_modules/},
+      {test: /\.js$/, use: "babel-loader", exclude: /node_modules/},
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
@@ -73,9 +73,7 @@ module.exports = {
   },
   plugins: [
     //分离出style css文件
-    new ExtractTextPlugin('style.css', {
-      allChunks: true
-    }),
+    new ExtractTextPlugin('[name].css'),
     //分离出公共的chunk文件
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor', 'manifest'],
@@ -96,7 +94,7 @@ module.exports = {
     // 使用html-webpack-plugin来建立模版文件
     new HtmlWebpackPlugin({
       template: "./view/index.html",
-      title:"react-start-kit"
+      title: "react-start-kit"
     })
   ]
 };
