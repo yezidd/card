@@ -8,6 +8,7 @@ import {observable} from 'mobx';
 import {observer} from 'mobx-react';
 import AddGradeModal from "../component/AddGradeModal";
 import {withRouter} from "react-router-dom";
+import {getQueryVariable} from "../util/utilFunc";
 
 @observer
 class GradeManage extends Component {
@@ -17,9 +18,12 @@ class GradeManage extends Component {
   async componentWillMount() {
 
     //获取到上个页面传递来的参数
-    let title = this.props.location.query.title;
-    let cid = this.props.location.query.cid;
+    // let title = this.props.location.query.title;
+    // let cid = this.props.location.query.cid;
+    let title = getQueryVariable("title");
+    let cid = getQueryVariable("cid");
 
+    console.log(cid,title,"-------");
 
     this.loading = true;
     await this.gradeListStore.getList(cid);
@@ -96,15 +100,7 @@ class GradeManage extends Component {
 
   //跳转到对应的年级  学院的班级里面去
   toLookClass = (data) => {
-    this.props.history.push({
-      pathname: "/class",
-      query: {
-        cid: this.props.location.query.cid,
-        ctitle: this.props.location.query.title,
-        gid: data.id,
-        gtitle: data.gradeName
-      }
-    })
+    this.props.history.push( `/class?cid=${getQueryVariable('cid')}&ctitle=${getQueryVariable('title')}&gid=${data.id}&gtitle=${data.gradeName}`)
   };
 
   updateBtn = async (data) => {
@@ -133,7 +129,7 @@ class GradeManage extends Component {
   render() {
     return (
       <div>
-        <h1>{this.props.location.query.title}</h1>
+        <h1>{decodeURIComponent(getQueryVariable("title"))}</h1>
         <Layout.Row>
           <Layout.Col span="24">
             <div className="btn-class-group">
@@ -166,7 +162,7 @@ class GradeManage extends Component {
             }}
           />
         </Loading>
-        <AddGradeModal ref={ref => this.gradeAddModal = ref} cid={this.props.location.query.cid}
+        <AddGradeModal ref={ref => this.gradeAddModal = ref} cid={getQueryVariable("cid")}
                        gradeStore={this.gradeListStore}/>
       </div>
     );

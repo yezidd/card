@@ -88,13 +88,7 @@ class CollegeManage extends Component {
 
   //跳转到学院的年级管理
   toLookGrade = (data) => {
-    this.props.history.push({
-      pathname: '/grade',
-      query: {
-        title: data.collegeName,
-        cid: data.id
-      },
-    })
+    this.props.history.push(`/grade?title=${data.collegeName}&cid=${data.id}`)
   };
 
   updateBtn = async (data) => {

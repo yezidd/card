@@ -11,6 +11,7 @@ import {ClassListStore} from "../logic/ClassListStore";
 import AddClassModal from "../component/AddClassModal";
 import {DelAllClass, updateClass} from "../logic/ClassApiStore";
 import {withRouter} from "react-router-dom";
+import {getQueryVariable} from "../util/utilFunc";
 
 
 //打卡数据界面
@@ -27,8 +28,7 @@ class ClassManage extends Component {
 
 
   async componentWillMount() {
-    console.log(this.props.location.query.gid)
-    let gid = this.props.location.query.gid;
+    let gid = getQueryVariable("gid");
     this.loading = true;
     await this.classListStore.getList(gid);
     this.loading = false;
@@ -132,11 +132,10 @@ class ClassManage extends Component {
   };
 
 
-
   render() {
     return (
       <div>
-        <h1>{this.props.location.query.ctitle}-{this.props.location.query.gtitle}</h1>
+        <h1>{decodeURIComponent(getQueryVariable("ctitle"))}-{decodeURIComponent(getQueryVariable("gtitle"))}</h1>
         <Layout.Row>
           <Layout.Col span="24">
             <div className="btn-class-group">
@@ -170,7 +169,7 @@ class ClassManage extends Component {
           />
         </Loading>
         <AddClassModal ref={ref => this.addClassModal = ref}
-                       gid={this.props.location.query.gid}
+                       gid={getQueryVariable("gid")}
                        classStore={this.classListStore}/>
       </div>
     );
