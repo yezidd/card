@@ -485,11 +485,22 @@ function getFlatternDistance(lat1, lng1, lat2, lng2) {
 
 //获取到所有的班级
 async function getClassList(ctx) {
-  let classList = await mysql("cClass").select("*").where("isActive", "=", 1);
-  console.log(classList, "----")
-  if (classList) {
+  //传递一个学院id
+  let collegeId = ctx.query.collegeId;
+
+
+
+  let $sql = `SELECT cClass.id,cClass.className FROM cClass,cGrade,cCollege WHERE cCollege.id = ${collegeId} AND cCollege.isActive = 1 AND cCollege.id = cGrade.cid AND cGrade.isActive = 1 AND cClass.gid = cGrade.id AND cClass.isActive = 1`;
+
+  const result = await mysql.schema.raw($sql);
+  if (result) {
     ctx.state.code = 1;
-    ctx.state.data = classList;
+    ctx.state.data = clear(result[0]);
+  } else {
+    ctx.state.code = 0;
+    ctx.state.data = {
+      message: "发生错误"
+    }
   }
 }
 
@@ -607,6 +618,15 @@ async function postFeedBackActivity(ctx) {
   }
 }
 
+//获取到学院列表
+async function getCollegeList(ctx) {
+  let collegeList = await mysql("cCollege").select("*").where("isActive", "=", 1);
+  if (collegeList) {
+    ctx.state.code = 1;
+    ctx.state.data = collegeList;
+  }
+}
+
 module.exports = {
   postActivityList,
   postLogin,
@@ -620,5 +640,6 @@ module.exports = {
   postHistoryActivity,
   postHistoryActivityById,
   postFeedBackActivity,
-  postModifySignInfo
+  postModifySignInfo,
+  getCollegeList
 };

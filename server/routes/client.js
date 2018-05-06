@@ -49,6 +49,9 @@ router.post("/activity/feedback", validationMiddleware, controllers.client.postF
 //绑定函数
 router.post('/person/bind', validationMiddleware, controllers.client.postBindPerson);
 
+//获取到所有学院
+router.get('/college/list', controllers.client.getCollegeList);
+
 //下面是夜归打卡的接口
 //-----------------------------
 //获取到任务列表
