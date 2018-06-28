@@ -112,6 +112,12 @@ async function getUserInfo(ctx) {
       .where("open_id", "=", open_id)
       .join("cClass", function () {
         this.on("cClass.id", "=", "cStudentInfo.classId")
+      })
+      .join("cGrade", function () {
+        this.on("cClass.gid", "=", "cGrade.id")
+      })
+      .join("cCollege", function () {
+        this.on("cCollege.id", "=", "cGrade.cid")
       });
     if (result.length === 0) {
       ctx.state.code = 1;
